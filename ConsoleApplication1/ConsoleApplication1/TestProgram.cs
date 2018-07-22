@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleApplication1
+namespace ÜbungsProgramm
 {
     class TestProgram
     {
@@ -19,6 +19,8 @@ namespace ConsoleApplication1
             Console.WriteLine("4 = TestProgrammUeberladen");
             Console.WriteLine("5 = TestProgrammRueckgabe");
             Console.WriteLine("6 = MenschObjektAnlegen");
+            Console.WriteLine("7 = Vererbung");
+            Console.WriteLine("8 = Polymorphie");
 
             switch (Convert.ToInt32(Console.ReadLine()))
             {
@@ -50,6 +52,16 @@ namespace ConsoleApplication1
                 case 6:
                     Console.WriteLine("Starte MenschObjektAnlegen");
                     MenschAnlegen();
+                    TestWahl();
+                    break;
+                case 7:
+                    Console.WriteLine("Starte Vererbung");
+                    Vererbung();
+                    TestWahl();
+                    break;
+                case 8:
+                    Console.WriteLine("Starte Vererbung");
+                    Polymorphie();
                     TestWahl();
                     break;
                 default:
@@ -196,10 +208,59 @@ namespace ConsoleApplication1
 
 
         }
+
+        // Vererbung -----------------------------------------------------------------------------------------------------
+        private static void Vererbung()
+        {
+
+            Homosapien homosapien1;
+            homosapien1 = new Homosapien(5, 30, 20, 20);
+
+            Console.WriteLine(homosapien1.Beschreiben());
+            homosapien1.Geburtstag();
+            Console.WriteLine(homosapien1.Beschreiben());
+            homosapien1.Wachsen(10);
+            Console.WriteLine(homosapien1.Beschreiben());
+            homosapien1.Geburtstag();
+            Console.WriteLine(homosapien1.Beschreiben());
+            homosapien1.Essen();
+            Console.WriteLine(homosapien1.Beschreiben());
+
+            for (int i = 0; i <= 60; i++)
+            {
+                homosapien1.Geburtstag();
+                Console.WriteLine(homosapien1.Beschreiben());
+            }
+
+        }
+        // Polymorphie -----------------------------------------------------------------------------------------------------
+        private static void Polymorphie()
+        {
+            Shape[] shapes = new Shape[9];
+
+            shapes[0] = new Triangle(10, 20, 30, 40);
+            shapes[1] = new Rectangle(10, 20, 30, 40);
+            shapes[2] = new Circle(10, 20, 30, 40);
+            shapes[3] = new Triangle(1, 2, 3, 4);
+            shapes[4] = new Rectangle(1, 2, 3, 4);
+            shapes[5] = new Circle(1, 2, 3, 4);
+            shapes[6] = new Triangle(30, 50, 33, 27);
+            shapes[7] = new Rectangle(12, 23, 36, 48);
+            shapes[8] = new Circle(98, 12, 57, 93);
+
+            foreach (Shape s in shapes)
+            {
+                s.Draw();
+                Console.WriteLine();
+            }
+
+            Console.ReadKey();
+        }
     }    
     // Klasse Mensch -----------------------------------------------------------------------------------------------------
     class Mensch : IDisposable
     {
+        // Konstruktor - wird beim Objekt erstellen als erstes aufgerufen
         public Mensch(string name, string vorname, int größe, int gewicht)
         {
             this.name = name;
@@ -211,9 +272,11 @@ namespace ConsoleApplication1
 
         }
 
+        // Deklaration der Klasseneigenschaften
         int alter, größe, gewicht, aktuelleGeschwindigkeit;
         string name, vorname;
 
+        // Methoden - Fähigkeiten der Klasse
         public int Geburtstag()
         {
             return ++alter;
@@ -236,6 +299,8 @@ namespace ConsoleApplication1
         {
             GC.GetGeneration(this);
         }
+
+        // Eigenschaften - Benötigen mindestens einen Accessor - Werden benötigt um zb eine eine Objekteigenschaft zu verändern oder abzufragen
         public int Größe
         {
             get { return größe; }
@@ -268,5 +333,4 @@ namespace ConsoleApplication1
     {
         public static int Alter;
     }
-
-    }
+}

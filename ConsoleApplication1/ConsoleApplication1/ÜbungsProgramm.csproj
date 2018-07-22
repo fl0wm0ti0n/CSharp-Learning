@@ -43,6 +43,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Shape.cs" />
+    <Compile Include="Säugetier.cs" />
+    <Compile Include="Homosapien.cs" />
+    <Compile Include="Wal.cs" />
     <Compile Include="TestProgram.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
