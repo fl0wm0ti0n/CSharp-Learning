@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ÜbungsProgramm
 {
-    class Säugetier
+    class Säugetier : IComparable
     {
         int alter, größe, breite, anzahlKinder, energie, nichtWachsenAb;
         bool lebt;
@@ -66,6 +66,28 @@ namespace ÜbungsProgramm
         public void Sprechen(int text)
         {
             Console.WriteLine("Das Säugetier spricht!");
+        }
+
+        public int CompareTo(object obj)
+        {
+            Säugetier parameter = obj as Säugetier;
+            if (parameter == null)
+            {
+                throw new ArgumentException("obj hat nicht denselben Typ wie diese Instanz");
+            }
+
+            if (parameter.Alter > this.Alter)
+            {
+                return -1;
+            }
+            else if (parameter.alter == this.alter)
+            {
+                return 0;
+            }
+            else
+            {
+                return 1;
+            }
         }
 
         // Eigenschaften

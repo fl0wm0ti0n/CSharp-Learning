@@ -21,6 +21,7 @@ namespace ÜbungsProgramm
             Console.WriteLine("6 = MenschObjektAnlegen");
             Console.WriteLine("7 = Vererbung");
             Console.WriteLine("8 = Polymorphie");
+            Console.WriteLine("9 = Schnittstellen");
 
             switch (Convert.ToInt32(Console.ReadLine()))
             {
@@ -60,8 +61,13 @@ namespace ÜbungsProgramm
                     TestWahl();
                     break;
                 case 8:
-                    Console.WriteLine("Starte Vererbung");
+                    Console.WriteLine("Starte Polymorphie");
                     Polymorphie();
+                    TestWahl();
+                    break;
+                case 9:
+                    Console.WriteLine("Starte Schnittstellen");
+                    Schnittstellen();
                     TestWahl();
                     break;
                 default:
@@ -255,6 +261,34 @@ namespace ÜbungsProgramm
             }
 
             Console.ReadKey();
+        }
+        // Schnittstellen -----------------------------------------------------------------------------------------------------
+        // Siehe Klasse Säufetier die Methode "public int CompareTo(object obj)"
+        private static void Schnittstellen()
+        {
+            
+            List<Säugetier> Säugetiere = new List<Säugetier>();
+            Säugetiere.Add(new Homosapien(5, 30, 10, 23));
+            Säugetiere.Add(new Homosapien(5, 20, 6, 20));
+            Säugetiere.Add(new Wal(100,40,40));
+
+            Säugetiere[1].Geburtstag();
+            Säugetiere[2].Geburtstag();
+            Säugetiere[2].Geburtstag();
+            Säugetiere[0].Geburtstag();
+            Säugetiere[0].Geburtstag();
+            Säugetiere[0].Geburtstag();
+
+            // Methode "Sort" benötgt die Schnittstelle "IComparable"
+            Säugetiere.Sort();
+
+            foreach (Säugetier s in Säugetiere)
+            {
+                Console.WriteLine(s.Alter);
+            }
+
+            Console.ReadKey();
+
         }
     }    
     // Klasse Mensch -----------------------------------------------------------------------------------------------------
