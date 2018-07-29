@@ -6,8 +6,9 @@ using System.Windows.Forms;
 
 namespace Chat_Client_APP
 {
-    static class Program
+    class Program
     {
+        public static Form1 form1;
         /// <summary>
         /// Der Haupteinstiegspunkt für die Anwendung.
         /// </summary>
@@ -16,7 +17,10 @@ namespace Chat_Client_APP
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+
+            Application.Run(form1 = new Form1());
+            //Application.Run(new Form1());
+
         }
     }
 }

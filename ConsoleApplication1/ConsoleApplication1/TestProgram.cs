@@ -263,7 +263,7 @@ namespace ÜbungsProgramm
             Console.ReadKey();
         }
         // Schnittstellen -----------------------------------------------------------------------------------------------------
-        // Siehe Klasse Säufetier die Methode "public int CompareTo(object obj)"
+        // Siehe Klasse Säugetier die Methode "public int CompareTo(object obj)"
         private static void Schnittstellen()
         {
             
