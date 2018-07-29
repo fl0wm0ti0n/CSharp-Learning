@@ -227,6 +227,7 @@
             this.bSpalte1.TabIndex = 6;
             this.bSpalte1.Text = "1";
             this.bSpalte1.UseVisualStyleBackColor = false;
+            this.bSpalte1.Click += new System.EventHandler(this.bSpalte1_Click);
             // 
             // bSpalte2
             // 

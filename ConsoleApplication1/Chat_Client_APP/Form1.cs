@@ -14,11 +14,19 @@ namespace Chat_Client_APP
 {
     public partial class Form1 : Form
     {
+
+        static int nNumberOf = 7 * 5;
+        Rectangle[,] spielfeld = new Rectangle[7, 5];
+        Point[] point = new Point[nNumberOf];
+        Size[] size = new Size[nNumberOf];
+
         public Form1()
         {
 
             InitializeComponent();
             Connection.CreateSocket();
+
+
 
             // Füge LokaleIp automatsich im Textefeld ein 
             textIP1.Text = Connection.GetLocalIP();
@@ -93,17 +101,11 @@ namespace Chat_Client_APP
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
 
-            var nNumberOf   = 7 * 5;
             var nNumberInc  = 0;
             var ySize       = 91;
             var xSize       = 91;
             var xPoint      = 569;
             var yPoint      = 70;
-
-            Rectangle[,]    spielfeld = new Rectangle[7,5];
-            Point[]         point = new Point[nNumberOf];
-            Size[]          size = new Size[nNumberOf];
-
 
             //erstelle Gitter
             //Spalten
@@ -135,12 +137,114 @@ namespace Chat_Client_APP
             {
             e.Graphics.DrawRectangle(Pens.White, s);
             }
+        }
+//--------------------------------------------------------------------------------------------------------
+        public void FillField(PaintEventArgs e)
+        {
 
-            e.Graphics.FillRectangle(Brushes.Azure,spielfeld[1,1]);
+            e.Graphics.FillRectangle(Brushes.Azure, spielfeld[1, 1]);
+
+        }
+        //--------------------------------------------------------------------------------------------------------
+
+        private void bSpalte1_Click(object sender, EventArgs e)
+        {
+            Game.Einwurf(1, e);
+
+            bSpalte1.Enabled = false;
+            bSpalte2.Enabled = false;
+            bSpalte3.Enabled = false;
+            bSpalte4.Enabled = false;
+            bSpalte5.Enabled = false;
+            bSpalte6.Enabled = false;
+            bSpalte7.Enabled = false;
 
         }
 
-//--------------------------------------------------------------------------------------------------------
+        private void bSpalte2_Click(object sender, EventArgs e)
+        {
+            Game.Einwurf(2, e);
+
+            bSpalte1.Enabled = false;
+            bSpalte2.Enabled = false;
+            bSpalte3.Enabled = false;
+            bSpalte4.Enabled = false;
+            bSpalte5.Enabled = false;
+            bSpalte6.Enabled = false;
+            bSpalte7.Enabled = false;
+
+        }
+
+        private void bSpalte3_Click(object sender, EventArgs e)
+        {
+            Game.Einwurf(3, e);
+
+            bSpalte1.Enabled = false;
+            bSpalte2.Enabled = false;
+            bSpalte3.Enabled = false;
+            bSpalte4.Enabled = false;
+            bSpalte5.Enabled = false;
+            bSpalte6.Enabled = false;
+            bSpalte7.Enabled = false;
+
+        }
+
+        private void bSpalte4_Click(object sender, EventArgs e)
+        {
+            Game.Einwurf(4, e);
+
+            bSpalte1.Enabled = false;
+            bSpalte2.Enabled = false;
+            bSpalte3.Enabled = false;
+            bSpalte4.Enabled = false;
+            bSpalte5.Enabled = false;
+            bSpalte6.Enabled = false;
+            bSpalte7.Enabled = false;
+
+        }
+
+        private void bSpalte5_Click(object sender, EventArgs e)
+        {
+            Game.Einwurf(5, e);
+
+            bSpalte1.Enabled = false;
+            bSpalte2.Enabled = false;
+            bSpalte3.Enabled = false;
+            bSpalte4.Enabled = false;
+            bSpalte5.Enabled = false;
+            bSpalte6.Enabled = false;
+            bSpalte7.Enabled = false;
+
+        }
+
+        private void bSpalte6_Click(object sender, EventArgs e)
+        {
+            Game.Einwurf(6, e);
+
+            bSpalte1.Enabled = false;
+            bSpalte2.Enabled = false;
+            bSpalte3.Enabled = false;
+            bSpalte4.Enabled = false;
+            bSpalte5.Enabled = false;
+            bSpalte6.Enabled = false;
+            bSpalte7.Enabled = false;
+
+        }
+
+        private void bSpalte7_Click(object sender, EventArgs e)
+        {
+            Game.Einwurf(7, e);
+
+            bSpalte1.Enabled = false;
+            bSpalte2.Enabled = false;
+            bSpalte3.Enabled = false;
+            bSpalte4.Enabled = false;
+            bSpalte5.Enabled = false;
+            bSpalte6.Enabled = false;
+            bSpalte7.Enabled = false;
+
+        }
+
         private void label1_Click(object sender, EventArgs e)
         {
 
@@ -196,5 +300,6 @@ namespace Chat_Client_APP
         {
 
         }
+
     }
 }
