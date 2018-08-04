@@ -3,22 +3,32 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Net;
+using System.Net.Sockets;
 
-namespace Chat_Client_APP
+namespace IP_GameChat
 {
-    class Program
+    internal class Program
     {
-        public static Form1 form1;
+        public static Form1 Form1;
+        public static Teilnehmer User;
+        public static System.Timers.Timer AppTimer;
         /// <summary>
         /// Der Haupteinstiegspunkt für die Anwendung.
         /// </summary>
         [STAThread]
         static void Main()
         {
+            var random = new Random(100);
+            AppTimer = new System.Timers.Timer();
+            User = new Teilnehmer(Dns.GetHostName(), Dns.GetHostName(), "me");
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            Application.Run(form1 = new Form1());
+            Application.Run(Form1 = new Form1());
+
+            AppTimer.Start();
             //Application.Run(new Form1());
 
         }

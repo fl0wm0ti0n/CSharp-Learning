@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2047
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ÜbungsProgramm", "ConsoleApplication1\ÜbungsProgramm.csproj", "{C22C8E5D-CD82-487C-9E52-C1C0D09E0843}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chat_Client_APP", "Chat_Client_APP\Chat_Client_APP.csproj", "{6486489A-A2BB-4904-86BB-A730C3313FB0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IP-GameChat", "Chat_Client_APP\IP-GameChat.csproj", "{6486489A-A2BB-4904-86BB-A730C3313FB0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,5 +24,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {34CC6EB9-1F8D-455D-A674-F5042DDAB447}
 	EndGlobalSection
 EndGlobal

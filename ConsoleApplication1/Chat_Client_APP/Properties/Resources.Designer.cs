@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Chat_Client_APP.Properties
+namespace IP_GameChat.Properties
 {
 
 

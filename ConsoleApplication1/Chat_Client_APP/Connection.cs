@@ -10,44 +10,46 @@ using System.Windows.Forms;
 using System.Net;
 using System.Net.Sockets;
 
-namespace Chat_Client_APP
+namespace IP_GameChat
 {
-    static class Connection
+    internal static class Connection
     {
-        static Socket sck;
-        static EndPoint epLocal, epRemote;
+        private static Socket _sck;
+        private static EndPoint _epLocal, _epRemote;
+        public static Teilnehmer User = new Teilnehmer("TestName", "TestHost", "he");
+        public static bool Angefragt = false;
 
-        static public void CreateSocket()
+        public static void CreateSocket()
         {
 
             // Erstelle Socket Objekt
-            sck = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-            sck.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+            _sck = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+            _sck.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
         }
 
         //--MessageCallBack------------------------------------------------------------------------------------------------------
-        static public void MessageCallBack(IAsyncResult aResult)
+        public static void MessageCallBack(IAsyncResult aResult)
         {
             try
             {
                 // in sck sind die Verbindungsdaten gespeichert
-                int size = sck.EndReceiveFrom(aResult, ref epRemote);
+                var size = _sck.EndReceiveFrom(aResult, ref _epRemote);
                 if (size > 0)
                 {
                     // erstelle Variable welche bytes speichert, speichere das Wrgebnis von AsyncState darin
-                    byte[] receivedData = new byte[1464];
+                    var receivedData = new byte[1464];
                     receivedData = (byte[])aResult.AsyncState;
 
                     //Konvertiere in ASCII
-                    ASCIIEncoding eEncoding = new ASCIIEncoding();
-                    string receivedMessage = eEncoding.GetString(receivedData);
+                    var eEncoding = new ASCIIEncoding();
+                    var receivedMessage = eEncoding.GetString(receivedData);
 
                     // Schriebe Nachricht in Chatliste
-                    Program.form1.SendFuckMSG(receivedMessage);
+                    ExtractMsgKind(receivedMessage);
                 }
 
-                byte[] buffer = new byte[1500];
-                sck.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref epRemote, new AsyncCallback(MessageCallBack), buffer);
+                var buffer = new byte[1500];
+                _sck.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref _epRemote, new AsyncCallback(MessageCallBack), buffer);
 
             }
             catch (Exception ex)
@@ -56,21 +58,52 @@ namespace Chat_Client_APP
             }
         }
 
+        // Prüfe Art der Nachricht ------------------------------------------------------------------------------------------------------
+
+        public static void ExtractMsgKind(string receivedMessage)
+        {
+            var typeOfMSG = "";
+
+            DecideWhatToDoWithMsg(typeOfMSG, receivedMessage);
+        }
+
+        // Entscheide was mit der Nachricht getan werden soll ------------------------------------------------------------------------------------------------------
+        public static void DecideWhatToDoWithMsg(string typeOfMSG, string receivedMessage)
+        {
+
+            switch (typeOfMSG)
+            {
+                case "CHAT_":
+                    Program.Form1.AddTextToChat(receivedMessage);
+                    break;
+                case "SYNC_":
+                    Program.Form1.AddTextToChat(receivedMessage);
+                    CreateOpponentUser(receivedMessage);
+                    break;
+                case "GAME_":
+                    Program.Form1.AddTextToChat(receivedMessage);
+                    break;
+                default:
+                    Program.Form1.AddTextToChat("Internal ERROR in DecideWhatToDoWithMSG - Code");
+                    break;
+            }
+        }
+
         //--ConnectWithEndPoint------------------------------------------------------------------------------------------------------
-        static public void ConnectWithEndPoint(string textIP1, string textPort1, string textIP2, string textPort2)
+        public static void ConnectWithEndPoint(string textIp1, string textPort1, string textIp2, string textPort2)
         {
             //object sender, EventArgs e
             try
             {
                 // Speichere Ip und Port in die EndPoint Variable
-                epLocal = new IPEndPoint(IPAddress.Parse(textIP1), Convert.ToInt32(textPort1));
-                sck.Bind(epLocal);
-                epRemote = new IPEndPoint(IPAddress.Parse(textIP2), Convert.ToInt32(textPort2));
-                sck.Connect(epRemote);
+                _epLocal = new IPEndPoint(IPAddress.Parse(textIp1), Convert.ToInt32(textPort1));
+                _sck.Bind(_epLocal);
+                _epRemote = new IPEndPoint(IPAddress.Parse(textIp2), Convert.ToInt32(textPort2));
+                _sck.Connect(_epRemote);
 
                 //Starte Empfang von nachrichten
-                byte[] buffer = new byte[1500];
-                sck.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref epRemote, new AsyncCallback(MessageCallBack), buffer);
+                var buffer = new byte[1500];
+                _sck.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref _epRemote, new AsyncCallback(MessageCallBack), buffer);
             }
             catch (Exception ex)
             {
@@ -78,19 +111,18 @@ namespace Chat_Client_APP
             }
 
         }
-        //--SendMSG------------------------------------------------------------------------------------------------------
-
-        static public string SendMSG(string text)
+        //--SendMsgData------------------------------------------------------------------------------------------------------
+        public static string SendMsgData(string text)
         {
             try
             {
                 // System.Text.ASCIIEncoding
-                ASCIIEncoding enc = new ASCIIEncoding();
-                byte[] bMsg = new byte[1500];
-                string sMsg = DateTime.Now + " @ " + Dns.GetHostName() + ": " + text;
+                var enc = new ASCIIEncoding();
+                var bMsg = new byte[1500];
+                var sMsg = "CHAT_" + DateTime.Now + " @ " + Program.User.Name + ": " + text;
                 bMsg = enc.GetBytes(sMsg);
 
-                sck.Send(bMsg);
+                _sck.Send(bMsg);
                 return sMsg;
             }
             catch (Exception ex)
@@ -101,19 +133,33 @@ namespace Chat_Client_APP
 
         }
 
-        //--SendData------------------------------------------------------------------------------------------------------
-
-        static public void SendData(int gesetzt)
+        //--SendGameData------------------------------------------------------------------------------------------------------
+        public static void SendGameData(string gameDataTyp, string gameData)
         {
+            // System.Text.ASCIIEncoding
+            var enc = new ASCIIEncoding();
+            var bData = new byte[1500];
+            var sData = "";
+
+            switch (gameDataTyp)
+            {
+                case "spalte":
+                    sData = "GAME_" + DateTime.Now + ";" + Program.User.Id + ";" + gameData;
+                    break;
+                case "anfrage":
+                    sData = "GAME_" + DateTime.Now + ";" + Program.User.Id + ";" + gameData;
+                    break;
+                case "beenden":
+                    sData = "GAME_" + DateTime.Now + ";" + Program.User.Id + ";" + gameData;
+                    break;
+                default:
+                    break;
+            }
+
             try
             {
-                // System.Text.ASCIIEncoding
-                ASCIIEncoding enc = new ASCIIEncoding();
-                byte[] bData = new byte[1500];
-                string sData = DateTime.Now + ";" + Dns.GetHostName() + ";" + gesetzt;
                 bData = enc.GetBytes(sData);
-
-                sck.Send(bData);
+                _sck.Send(bData);
 
 
             }
@@ -122,17 +168,51 @@ namespace Chat_Client_APP
                 MessageBox.Show(ex.ToString());
             }
         }
+
+        //--SendSyncData------------------------------------------------------------------------------------------------------
+        public static void SendSyncData()
+        {
+            try
+            {
+                // System.Text.ASCIIEncoding
+                var enc = new ASCIIEncoding();
+                var bData = new byte[1500];
+                var sData = "SYNC_" + DateTime.Now + ";" + Program.User.Id + ";" + Program.User.Name + ";" + Program.User.Host;
+                bData = enc.GetBytes(sData);
+
+                _sck.Send(bData);
+
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        //-- Erstellt ein Teilnehmer objekt des Gegenübers------------------------------------------------------------------------------------------------------
+        public static void CreateOpponentUser(string receivedMessage)
+        {
+            try
+            {
+                
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
         //--------------------------------------------------------------------------------------------------------
         // Hole LokaleIP vom System
-        static public string GetLocalIP()
+        public static string GetLocalIp()
         {
 
             // Erstelle Objekt mit Lokalen DNS Namen
-            IPHostEntry host;
-            host = Dns.GetHostEntry(Dns.GetHostName());
+            IPHostEntry host = Dns.GetHostEntry(Dns.GetHostName());
 
             // Gehe alle Adrssen welche in host.Adressliste gepseichert wurden durch und gleiche sie mit der AdressenFamilie ab. Wenn IP4 dann wird diese rückgegeben
-            foreach (IPAddress ip in host.AddressList)
+            foreach (var ip in host.AddressList)
                 if (ip.AddressFamily == AddressFamily.InterNetwork)
                 {
                     return ip.ToString();

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Timers;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -10,15 +11,16 @@ using System.Windows.Forms;
 using System.Net;
 using System.Net.Sockets;
 
-namespace Chat_Client_APP
+namespace IP_GameChat
 {
     public partial class Form1 : Form
     {
 
-        static int nNumberOf = 7 * 5;
-        Rectangle[,] spielfeld = new Rectangle[7, 5];
-        Point[] point = new Point[nNumberOf];
-        Size[] size = new Size[nNumberOf];
+        private static int _nNumberOf = 7 * 5;
+        private static int _timeLeft = 10;
+        Rectangle[,] _spielfeld = new Rectangle[7, 5];
+        Point[] _point = new Point[_nNumberOf];
+        Size[] _size = new Size[_nNumberOf];
 
         public Form1()
         {
@@ -29,8 +31,8 @@ namespace Chat_Client_APP
 
 
             // Füge LokaleIp automatsich im Textefeld ein 
-            textIP1.Text = Connection.GetLocalIP();
-            textIP2.Text = Connection.GetLocalIP();
+            textIP1.Text = Connection.GetLocalIp();
+            textIP2.Text = Connection.GetLocalIp();
         }
 
 //--------------------------------------------------------------------------------------------------------
@@ -45,14 +47,17 @@ namespace Chat_Client_APP
                 bStart.Enabled = false;
                 bSend.Enabled = true;
                 textChat.Focus();
+
+                timerSync.Start();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
             }
         }
+
         //--------------------------------------------------------------------------------------------------------
-        public void SendFuckMSG(string message)
+        public void AddTextToChat(string message)
         {
             if (message.Length != 0)
             {
@@ -60,10 +65,11 @@ namespace Chat_Client_APP
             }
 
         }
+
         //--------------------------------------------------------------------------------------------------------
         private void bSend_Click(object sender, EventArgs e)
         {
-            string sMsg = Connection.SendMSG(textChat.Text);
+            var sMsg = Connection.SendMsgData(textChat.Text);
 
             // Schreibe Nachricht in Chatliste
             textChatlist.Items.Add(sMsg);
@@ -77,7 +83,7 @@ namespace Chat_Client_APP
         {
             if (e.KeyCode == Keys.Enter)
             {
-                string sMsg = Connection.SendMSG(textChat.Text);
+                var sMsg = Connection.SendMsgData(textChat.Text);
                 e.Handled = true;
                 e.SuppressKeyPress = true;
 
@@ -87,16 +93,18 @@ namespace Chat_Client_APP
 
             }
         }
+
 //--------------------------------------------------------------------------------------------------------
         private void Form1_Load(object sender, EventArgs e)
         {
 
-            this.DoubleBuffered = true;
+            DoubleBuffered = true;
 
-            this.Paint += new PaintEventHandler(Form1_Paint);
+            Paint += Form1_Paint;
 
 
         }
+
 //--------------------------------------------------------------------------------------------------------
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
@@ -109,15 +117,15 @@ namespace Chat_Client_APP
 
             //erstelle Gitter
             //Spalten
-            for (int i = 0; i < 5; i++)
+            for (var i = 0; i < 5; i++)
             {
 
                 //Zeilen
-                for (int j = 0; j < 7; j++)
+                for (var j = 0; j < 7; j++)
                 {
-                    point[nNumberInc] = new Point(xPoint, yPoint);
-                    size[nNumberInc] = new Size(ySize, xSize);
-                    spielfeld[j, i] = new Rectangle(point[nNumberInc], size[nNumberInc]);
+                    _point[nNumberInc] = new Point(xPoint, yPoint);
+                    _size[nNumberInc] = new Size(ySize, xSize);
+                    _spielfeld[j, i] = new Rectangle(_point[nNumberInc], _size[nNumberInc]);
 
                     nNumberInc = nNumberInc++;
                     xPoint = xPoint + 91;
@@ -133,23 +141,112 @@ namespace Chat_Client_APP
             }
 
 
-            foreach (Rectangle s in spielfeld)
+            foreach (var s in _spielfeld)
             {
             e.Graphics.DrawRectangle(Pens.White, s);
             }
         }
-//--------------------------------------------------------------------------------------------------------
-        public void FillField(PaintEventArgs e)
-        {
 
-            e.Graphics.FillRectangle(Brushes.Azure, spielfeld[1, 1]);
+        //--------------------------------------------------------------------------------------------------------
+        public void FillField(object sender, PaintEventArgs e)
+        {
+            e.Graphics.FillRectangle(Brushes.SkyBlue, _spielfeld[1, 1]);
+        }
+
+        //--------------------------------------------------------------------------------------------------------
+        private void bStartGame_Click(object sender, EventArgs e)
+        {
+            var test = textChatlist.Items.Add("Warte auf anderen Spieler");
+
+            if (Connection.Angefragt)
+            {
+                GameProcess.StartTheGame();
+            }
+            else
+            {
+                GameProcess.GameRequest();
+                timerGameRequest.Start();
+            }
 
         }
-        //--------------------------------------------------------------------------------------------------------
 
+        // Countdown Forms Timer --------------------------------------------------------------------------------------------------------
+        private void TimerGameRequest_Tick(object sender, EventArgs e)
+        {
+            try
+            {
+
+                if (_timeLeft > 0)
+                {
+                    // Display the new time left
+                    // by updating the Time Left label.
+                    _timeLeft--;
+                    textChatlist.Items.Add("Noch " + _timeLeft + " Sekunden um das Spiel zu starten");
+                }
+                else
+                {
+                    // If  out of time, stop the timer, show
+                    // a MessageBox.
+                    timerGameRequest.Stop();
+                    textChatlist.Items.Add(Connection.User.Name + " hat dem Spiel nicht zugestimmt");
+                    _timeLeft = 10;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+                throw;
+            }
+        }
+
+        // Sync Forms Timer --------------------------------------------------------------------------------------------------------
+        private void TimerSync_Tick(object sender, EventArgs e)
+        {
+            try
+            {
+                Connection.SendSyncData();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+                throw;
+            }
+        }
+
+        //--------------------------------------------------------------------------------------------------------
+        private void bStopGame_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        //--------------------------------------------------------------------------------------------------------
+        private void bChangeName_Click(object sender, EventArgs e)
+        {
+            // wenn Textfeld nicht lee ist ändere name
+            if (!string.IsNullOrEmpty(txtName.Text))
+            {
+                Program.User.Name = txtName.Text;
+                textChatlist.Items.Add("Der Name wurde auf '" + txtName.Text + "' geändert!");
+                txtName.Clear();
+            }
+        }
+
+        // Schaltet die Spaltenbuttons wieder frei--------------------------------------------------------------------------------------------------------
+        private void EnableGameButtons()
+        {
+            bSpalte1.Enabled = true;
+            bSpalte2.Enabled = true;
+            bSpalte3.Enabled = true;
+            bSpalte4.Enabled = true;
+            bSpalte5.Enabled = true;
+            bSpalte6.Enabled = true;
+            bSpalte7.Enabled = true;
+        }
+
+        // Sperrt die Spaltenbuttons wenn gesetzt--------------------------------------------------------------------------------------------------------
         private void bSpalte1_Click(object sender, EventArgs e)
         {
-            Game.Einwurf(1, e);
+            GameProcess.SetEinwurf(1);
 
             bSpalte1.Enabled = false;
             bSpalte2.Enabled = false;
@@ -158,12 +255,11 @@ namespace Chat_Client_APP
             bSpalte5.Enabled = false;
             bSpalte6.Enabled = false;
             bSpalte7.Enabled = false;
-
         }
 
         private void bSpalte2_Click(object sender, EventArgs e)
         {
-            Game.Einwurf(2, e);
+            GameProcess.SetEinwurf(2);
 
             bSpalte1.Enabled = false;
             bSpalte2.Enabled = false;
@@ -172,12 +268,11 @@ namespace Chat_Client_APP
             bSpalte5.Enabled = false;
             bSpalte6.Enabled = false;
             bSpalte7.Enabled = false;
-
         }
 
         private void bSpalte3_Click(object sender, EventArgs e)
         {
-            Game.Einwurf(3, e);
+            GameProcess.SetEinwurf(3);
 
             bSpalte1.Enabled = false;
             bSpalte2.Enabled = false;
@@ -186,12 +281,11 @@ namespace Chat_Client_APP
             bSpalte5.Enabled = false;
             bSpalte6.Enabled = false;
             bSpalte7.Enabled = false;
-
         }
 
         private void bSpalte4_Click(object sender, EventArgs e)
         {
-            Game.Einwurf(4, e);
+            GameProcess.SetEinwurf(4);
 
             bSpalte1.Enabled = false;
             bSpalte2.Enabled = false;
@@ -200,12 +294,11 @@ namespace Chat_Client_APP
             bSpalte5.Enabled = false;
             bSpalte6.Enabled = false;
             bSpalte7.Enabled = false;
-
         }
 
         private void bSpalte5_Click(object sender, EventArgs e)
         {
-            Game.Einwurf(5, e);
+            GameProcess.SetEinwurf(5);
 
             bSpalte1.Enabled = false;
             bSpalte2.Enabled = false;
@@ -214,12 +307,11 @@ namespace Chat_Client_APP
             bSpalte5.Enabled = false;
             bSpalte6.Enabled = false;
             bSpalte7.Enabled = false;
-
         }
 
         private void bSpalte6_Click(object sender, EventArgs e)
         {
-            Game.Einwurf(6, e);
+            GameProcess.SetEinwurf(6);
 
             bSpalte1.Enabled = false;
             bSpalte2.Enabled = false;
@@ -228,12 +320,11 @@ namespace Chat_Client_APP
             bSpalte5.Enabled = false;
             bSpalte6.Enabled = false;
             bSpalte7.Enabled = false;
-
         }
 
         private void bSpalte7_Click(object sender, EventArgs e)
         {
-            Game.Einwurf(7, e);
+            GameProcess.SetEinwurf(7);
 
             bSpalte1.Enabled = false;
             bSpalte2.Enabled = false;
@@ -242,7 +333,6 @@ namespace Chat_Client_APP
             bSpalte5.Enabled = false;
             bSpalte6.Enabled = false;
             bSpalte7.Enabled = false;
-
         }
 
         private void label1_Click(object sender, EventArgs e)
@@ -280,8 +370,6 @@ namespace Chat_Client_APP
 
         }
 
-
-
         private void boxClient1_Enter(object sender, EventArgs e)
         {
 
@@ -294,12 +382,19 @@ namespace Chat_Client_APP
 
         private void textIP1_TextChanged(object sender, EventArgs e)
         {
+
         }
 
         private void textPort4_TextChanged(object sender, EventArgs e)
         {
 
         }
+
+        private void txtName_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
 
     }
 }

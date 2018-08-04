@@ -10,29 +10,51 @@ using System.Windows.Forms;
 using System.Net;
 using System.Net.Sockets;
 
-namespace Chat_Client_APP
+namespace IP_GameChat
 {
-    public static class Game
+    public class Game
     {
+        string[,] _spielbrett;
+        Teilnehmer _spieler;
 
-
-    public static void Einwurf(int spalte, EventArgs e)
+        public Game(Teilnehmer spieler)
         {
-            int gesetzt = 0;
-
-            Connection.SendData(gesetzt);
-
-
-
+            Läuft = true;
+            Runde = 1;
+            LetzterSpielerWin = null;
+            Verloren = 0;
+            Gewonnen = 0;
+            SpielId = "game_" + Guid.NewGuid();
+            _spieler = spieler;
+            _spielbrett = new string[7, 5];
+            ZuletztGesetzt = null;
+            GameTimer = new System.Timers.Timer();
         }
-        /*public static void ZeichneCoin(int spalte)
+
+        public string GetSpielbrett(int value1, int value2)
         {
-            int gesetzt = 0;
+             return _spielbrett[value1, value2];
+        }
 
-            Connection.SendData(gesetzt);
+        public void SetSpielbrett(int value1, int value2, string value3)
+        {
+            _spielbrett[value1, value2] = value3;
+        }
 
-            Control.Paint += new PaintEventHandler(FillField);
-        }*/
+        public int Runde { get; set; }
 
+        public string LetzterSpielerWin { get; set; }
+
+        public string SpielId { get; }
+
+        public int Verloren { get; set; }
+
+        public int Gewonnen { get; set; }
+
+        public bool Läuft { get; set; }
+
+        public string ZuletztGesetzt { get; set; }
+
+        public System.Timers.Timer GameTimer { get; }
     }
 }

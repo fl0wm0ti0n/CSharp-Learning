@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Chat_Client_APP
+namespace IP_GameChat
 {
-    class chat
+    class Chat
     {
     }
 }
