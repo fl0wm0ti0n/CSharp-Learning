@@ -12,7 +12,7 @@ using System.Net.Sockets;
 
 namespace IP_GameChat
 {
-    public class Game
+    public class Game : IComponent
     {
         string[,] _spielbrett;
         Teilnehmer _spieler;
@@ -56,5 +56,14 @@ namespace IP_GameChat
         public string ZuletztGesetzt { get; set; }
 
         public System.Timers.Timer GameTimer { get; }
+
+        // von Schnittstelle
+        public void Dispose()
+        {
+            throw new NotImplementedException();
+        }
+
+        public ISite Site { get; set; }
+        public event EventHandler Disposed;
     }
 }

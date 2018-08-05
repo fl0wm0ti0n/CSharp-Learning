@@ -28,7 +28,7 @@ namespace IP_GameChat
         public string Name { get; set; }
 
         // Liefert eine einzigartige Teilnehmer ID
-        public string Id { get; }
+        public string Id { get; set; }
 
         // Liefert den Hostnamen des Teilnehmers
         public string Host { get; }

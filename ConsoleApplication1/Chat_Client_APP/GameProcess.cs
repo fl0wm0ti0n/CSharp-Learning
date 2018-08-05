@@ -9,28 +9,28 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Net;
 using System.Net.Sockets;
-using Chat_Client_APP;
 
 namespace IP_GameChat
 {
     public static class GameProcess
     {
+        public static Game Game1;
+
         // Startet das game
         public static void StartTheGame()
         {
             var game = new Game(Program.User);
 
             var startspieler = BerechneSpielerStart();
-
         }
 
         // Spieler setzt einen Coin
         public static void SetEinwurf(int spalte)
         {
-            var gameData = Convert.ToString(spalte);
-            var gameDataTyp = "spalte";
+            var gameValue = Convert.ToString(spalte);
+            var gameMessage = "spalte";
 
-            Connection.SendGameData(gameDataTyp, gameData);
+            Connection.SendData("game", gameMessage, gameValue);
 
             Program.Form1.Paint += Program.Form1.FillField;
         }
@@ -38,19 +38,21 @@ namespace IP_GameChat
         // Spieler hat auf Starten gedrückt
         public static void GameRequest()
         {
-            var gameData = "Spiel Anfrage";
-            var gameDataTyp = "anfrage";
+            var gameValue = "Spiel Anfrage";
+            var gameMessage = "anfrage";
 
-            Connection.SendGameData(gameDataTyp, gameData);
+            Connection.SendData("game", gameMessage, gameValue);
         }
 
         // Spieler will nicht mehr spielen
         public static void StopTheGame()
         {
-            var gameData = "Spiel beenden";
-            var gameDataTyp = "beenden";
+            var gameValue = "Spiel beenden";
+            var gameMessage = "beenden";
 
-            Connection.SendGameData(gameDataTyp, gameData);
+            Connection.SendData("game", gameMessage, gameValue);
+
+            // Game1.Dispose();
         }
 
         // Berechnet welcher Spieler startet
@@ -66,6 +68,5 @@ namespace IP_GameChat
             int index = random.Next(spieler.Count);
             return spieler[index];
         }
-
     }
 }

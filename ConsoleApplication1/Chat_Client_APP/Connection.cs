@@ -12,16 +12,17 @@ using System.Net.Sockets;
 
 namespace IP_GameChat
 {
-    internal static class Connection
+    public static class Connection
     {
         private static Socket _sck;
         private static EndPoint _epLocal, _epRemote;
-        public static Teilnehmer User = new Teilnehmer("TestName", "TestHost", "he");
-        public static bool Angefragt = false;
+        public static Teilnehmer User;
+        public static bool HeAngefragt = false;
+        public static bool MeAngefragt = false;
+        public static int MsgCount = 0;
 
         public static void CreateSocket()
         {
-
             // Erstelle Socket Objekt
             _sck = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
             _sck.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
@@ -45,12 +46,11 @@ namespace IP_GameChat
                     var receivedMessage = eEncoding.GetString(receivedData);
 
                     // Schriebe Nachricht in Chatliste
-                    ExtractMsgKind(receivedMessage);
+                    DecideWhatToDoWithMsg(receivedMessage);
                 }
 
                 var buffer = new byte[1500];
-                _sck.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref _epRemote, new AsyncCallback(MessageCallBack), buffer);
-
+                _sck.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref _epRemote, MessageCallBack, buffer);
             }
             catch (Exception ex)
             {
@@ -58,34 +58,53 @@ namespace IP_GameChat
             }
         }
 
-        // Prüfe Art der Nachricht ------------------------------------------------------------------------------------------------------
-
-        public static void ExtractMsgKind(string receivedMessage)
-        {
-            var typeOfMSG = "";
-
-            DecideWhatToDoWithMsg(typeOfMSG, receivedMessage);
-        }
-
         // Entscheide was mit der Nachricht getan werden soll ------------------------------------------------------------------------------------------------------
-        public static void DecideWhatToDoWithMsg(string typeOfMSG, string receivedMessage)
+        public static void DecideWhatToDoWithMsg(string receivedMessage)
         {
+            MsgParser newParserMsg = new MsgParser(receivedMessage);
 
-            switch (typeOfMSG)
+            switch (newParserMsg.MsgTyp)
             {
-                case "CHAT_":
-                    Program.Form1.AddTextToChat(receivedMessage);
+                case "chat":
+                    WriteChat(newParserMsg);
                     break;
-                case "SYNC_":
-                    Program.Form1.AddTextToChat(receivedMessage);
-                    CreateOpponentUser(receivedMessage);
+                case "sync":
+                    CreateOpponentUser(newParserMsg);
                     break;
-                case "GAME_":
-                    Program.Form1.AddTextToChat(receivedMessage);
+                case "game":
+                    DecideWhatToDoWithGameData(newParserMsg);
                     break;
                 default:
                     Program.Form1.AddTextToChat("Internal ERROR in DecideWhatToDoWithMSG - Code");
                     break;
+            }
+        }
+
+        // Entscheide was mit der Nachricht getan werden soll ------------------------------------------------------------------------------------------------------
+        public static void DecideWhatToDoWithGameData(MsgParser newParserMsg)
+        {
+
+            try
+            {
+                switch (newParserMsg.Message)
+                {
+                    case "spalte":
+                        break;
+                    case "anfrage":
+                        Program.Form1.StartTimer();
+                        HeAngefragt = true;
+                        break;
+                    case "gewonnen":
+                        break;
+                    case "beenden":
+                        break;
+                    default:
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
             }
         }
 
@@ -103,7 +122,7 @@ namespace IP_GameChat
 
                 //Starte Empfang von nachrichten
                 var buffer = new byte[1500];
-                _sck.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref _epRemote, new AsyncCallback(MessageCallBack), buffer);
+                _sck.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref _epRemote, MessageCallBack, buffer);
             }
             catch (Exception ex)
             {
@@ -112,90 +131,48 @@ namespace IP_GameChat
 
         }
         //--SendMsgData------------------------------------------------------------------------------------------------------
-        public static string SendMsgData(string text)
+        public static string SendData(string msgtyp, string message, string value)
         {
+            if (msgtyp == "chat")
+            {
+                MsgCount++;
+                value = Convert.ToString(MsgCount);
+            }
             try
             {
                 // System.Text.ASCIIEncoding
                 var enc = new ASCIIEncoding();
                 var bMsg = new byte[1500];
-                var sMsg = "CHAT_" + DateTime.Now + " @ " + Program.User.Name + ": " + text;
+                var sMsg = "<msgtyp>" + msgtyp + "</msgtyp><message>" + message + "</message><value>" + value + "</value><time>" + DateTime.Now + "</time><name>" + Program.User.Name + "</name><id>" + Program.User.Id + "</id><host>" + Program.User.Host + "</host>";
                 bMsg = enc.GetBytes(sMsg);
 
                 _sck.Send(bMsg);
-                return sMsg;
+                return message;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
                 return "ERROR - Nachricht wurde nicht geschickt";
             }
-
         }
-
-        //--SendGameData------------------------------------------------------------------------------------------------------
-        public static void SendGameData(string gameDataTyp, string gameData)
-        {
-            // System.Text.ASCIIEncoding
-            var enc = new ASCIIEncoding();
-            var bData = new byte[1500];
-            var sData = "";
-
-            switch (gameDataTyp)
-            {
-                case "spalte":
-                    sData = "GAME_" + DateTime.Now + ";" + Program.User.Id + ";" + gameData;
-                    break;
-                case "anfrage":
-                    sData = "GAME_" + DateTime.Now + ";" + Program.User.Id + ";" + gameData;
-                    break;
-                case "beenden":
-                    sData = "GAME_" + DateTime.Now + ";" + Program.User.Id + ";" + gameData;
-                    break;
-                default:
-                    break;
-            }
-
-            try
-            {
-                bData = enc.GetBytes(sData);
-                _sck.Send(bData);
-
-
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.ToString());
-            }
-        }
-
-        //--SendSyncData------------------------------------------------------------------------------------------------------
-        public static void SendSyncData()
-        {
-            try
-            {
-                // System.Text.ASCIIEncoding
-                var enc = new ASCIIEncoding();
-                var bData = new byte[1500];
-                var sData = "SYNC_" + DateTime.Now + ";" + Program.User.Id + ";" + Program.User.Name + ";" + Program.User.Host;
-                bData = enc.GetBytes(sData);
-
-                _sck.Send(bData);
-
-
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.ToString());
-            }
-        }
-
         //-- Erstellt ein Teilnehmer objekt des Gegenübers------------------------------------------------------------------------------------------------------
-        public static void CreateOpponentUser(string receivedMessage)
+        public static void CreateOpponentUser(MsgParser newParserMsg)
         {
             try
             {
-                
+                if (User == null) User = new Teilnehmer(newParserMsg.Name, newParserMsg.Host, "he") {Id = newParserMsg.Id};
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        public static void WriteChat(MsgParser newParserMsg)
+        {
+            try
+            {
+                Program.Form1.AddTextToChat(newParserMsg.Name + " @" + newParserMsg.Time + ": " + newParserMsg.Message);
             }
             catch (Exception ex)
             {
@@ -207,7 +184,6 @@ namespace IP_GameChat
         // Hole LokaleIP vom System
         public static string GetLocalIp()
         {
-
             // Erstelle Objekt mit Lokalen DNS Namen
             IPHostEntry host = Dns.GetHostEntry(Dns.GetHostName());
 
@@ -219,7 +195,6 @@ namespace IP_GameChat
                 }
 
             return "127.0.0.1";
-
         }
     }
 

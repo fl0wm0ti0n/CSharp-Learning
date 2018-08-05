@@ -13,42 +13,60 @@ using System.Net.Sockets;
 
 namespace IP_GameChat
 {
-    public partial class Form1 : Form
+    public partial class Form : System.Windows.Forms.Form
     {
-
         private static int _nNumberOf = 7 * 5;
         private static int _timeLeft = 10;
         Rectangle[,] _spielfeld = new Rectangle[7, 5];
         Point[] _point = new Point[_nNumberOf];
         Size[] _size = new Size[_nNumberOf];
+        private int timerCount;
 
-        public Form1()
+        public Form()
         {
-
             InitializeComponent();
             Connection.CreateSocket();
-
-
 
             // Füge LokaleIp automatsich im Textefeld ein 
             textIP1.Text = Connection.GetLocalIp();
             textIP2.Text = Connection.GetLocalIp();
         }
 
-//--------------------------------------------------------------------------------------------------------
-        private void bStart_Click(object sender, EventArgs e)
+        // Wird ausgeführt wenn die Form geladen wird ---------------------------------------------------------------------------------------
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            DoubleBuffered = true;
+
+            Paint += Form1_Paint;
+        }
+
+        // Wird ausgeführt wenn der Connect Button gedrückt wird ----------------------------------------------------------------------------
+        private void bConnect_Click(object sender, EventArgs e)
         {
             try
             {
-                Connection.ConnectWithEndPoint(textIP1.Text, textPort1.Text, textIP2.Text, textPort2.Text);
+                if (!string.IsNullOrEmpty(textIP1.Text) && !string.IsNullOrEmpty(textIP2.Text) && !string.IsNullOrEmpty(textPort1.Text) && !string.IsNullOrEmpty(textPort2.Text))
+                {
+                    Connection.ConnectWithEndPoint(textIP1.Text, textPort1.Text, textIP2.Text, textPort2.Text);
 
-                // Sperre "Start" Button und schreibe Connected
-                bStart.Text = "Connected";
-                bStart.Enabled = false;
-                bSend.Enabled = true;
-                textChat.Focus();
+                    // Sperre "Connect" Button und schreibe Connected
+                    bConnect.Text = "Connected";
+                    bConnect.Enabled = false;
+                    // Enable "Send" Button
+                    bSend.Enabled = true;
+                    // Enable "ChatTextFeld" Button
+                    textChat.Enabled = true;
+                    // Enable "Spiel Starten" Button
+                    bStartGame.Enabled = true;
 
-                timerSync.Start();
+                    textChat.Focus();
+
+                    timerSync.Start();
+                }
+                else
+                {
+                    textChatlist.Items.Add("Es wurden keine Verbindungsparameter eingegeben");
+                }
             }
             catch (Exception ex)
             {
@@ -56,59 +74,42 @@ namespace IP_GameChat
             }
         }
 
-        //--------------------------------------------------------------------------------------------------------
+        // Fügt Text in den Chat ein --------------------------------------------------------------------------------------------------------
         public void AddTextToChat(string message)
         {
             if (message.Length != 0)
             {
                 textChatlist.Items.Add(message);
             }
-
         }
 
-        //--------------------------------------------------------------------------------------------------------
+        // Sendet die Textnachricht per Button -----------------------------------------------------------------------------------------------
         private void bSend_Click(object sender, EventArgs e)
         {
-            var sMsg = Connection.SendMsgData(textChat.Text);
-
+            Connection.SendData("chat", textChat.Text, "platzhalter");
             // Schreibe Nachricht in Chatliste
-            textChatlist.Items.Add(sMsg);
+            AddTextToChat(Program.User.Name + " @" + DateTime.Now + ": " + textChat.Text);
             textChat.Clear();
-
         }
 
-        //--------------------------------------------------------------------------------------------------------
-
+        // Sendet die Textnachricht per Enter ------------------------------------------------------------------------------------------------
         private void textChat_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
             {
-                var sMsg = Connection.SendMsgData(textChat.Text);
+                Connection.SendData("chat", textChat.Text, "platzhalter");
                 e.Handled = true;
                 e.SuppressKeyPress = true;
 
                 // Schreibe Nachricht in Chatliste
-                textChatlist.Items.Add(sMsg);
+                AddTextToChat(Program.User.Name + " @" + DateTime.Now + ": " + textChat.Text);
                 textChat.Clear();
-
             }
         }
 
-//--------------------------------------------------------------------------------------------------------
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
-            DoubleBuffered = true;
-
-            Paint += Form1_Paint;
-
-
-        }
-
-//--------------------------------------------------------------------------------------------------------
+        // Zeichnet das Spielbrett ------------------------------------------------------------------------------------------------------------
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
-
             var nNumberInc  = 0;
             var ySize       = 91;
             var xSize       = 91;
@@ -119,7 +120,6 @@ namespace IP_GameChat
             //Spalten
             for (var i = 0; i < 5; i++)
             {
-
                 //Zeilen
                 for (var j = 0; j < 7; j++)
                 {
@@ -134,48 +134,93 @@ namespace IP_GameChat
                     {
                         xPoint = 569;
                     }
-
                 }
                 yPoint = yPoint + 91;
                 nNumberInc = nNumberInc++;
             }
-
-
             foreach (var s in _spielfeld)
             {
             e.Graphics.DrawRectangle(Pens.White, s);
             }
         }
 
-        //--------------------------------------------------------------------------------------------------------
+        // Füllt ein Feld im Spielbrett--------------------------------------------------------------------------------------------------------
         public void FillField(object sender, PaintEventArgs e)
         {
             e.Graphics.FillRectangle(Brushes.SkyBlue, _spielfeld[1, 1]);
         }
 
-        //--------------------------------------------------------------------------------------------------------
+        // Starte das Spiel oder Frage um ein Spiel an --------------------------------------------------------------------------------------------------------
         private void bStartGame_Click(object sender, EventArgs e)
         {
-            var test = textChatlist.Items.Add("Warte auf anderen Spieler");
-
-            if (Connection.Angefragt)
+            // Wenn Bereits vom anderen Spieler angefragt wurde starte das Spiel, Ansonsten Frage an!
+            if (!Connection.MeAngefragt && Connection.HeAngefragt)
             {
                 GameProcess.StartTheGame();
+
+                Connection.MeAngefragt = false;
+                Connection.HeAngefragt = false;
+
+                textChatlist.Items.Add("Spiel gestartet ...");
+            }
+            // Wenn der andere Spieler angefragt hat und Ich angefragt habe, starte das Spiel
+            else if (Connection.MeAngefragt && Connection.HeAngefragt)
+            {
+                GameProcess.StartTheGame();
+                
+                Connection.MeAngefragt = false;
+                Connection.HeAngefragt = false;
+
+                textChatlist.Items.Add("Spiel gestartet ...");
+            }
+            // Frage an
+            else
+            {
+                _timeLeft = 10;
+                GameProcess.GameRequest();
+                timerGameRequest.Start();
+
+                Connection.MeAngefragt = true;
+
+                textChatlist.Items.Add("Warte auf anderen Spieler");
+            }
+            bStartGame.Enabled = false;
+            bStopGame.Enabled = true;
+        }
+
+        // beende das Spiel oder Stoppe die Anfrage--------------------------------------------------------------------------------------------------------
+        private void bStopGame_Click(object sender, EventArgs e)
+        {
+            if (timerGameRequest.Enabled)
+            {
+                //Timer Stoppen & Resetten
+                timerGameRequest.Stop();
+                _timeLeft = 10;
+
+                Connection.MeAngefragt = true;
             }
             else
             {
-                GameProcess.GameRequest();
-                timerGameRequest.Start();
+                GameProcess.StopTheGame();
             }
-
+            bStartGame.Enabled = true;
+            bStopGame.Enabled = false;
         }
+
+        // beende das Spiel oder Stoppe die Anfrage--------------------------------------------------------------------------------------------------------
+        public void StartTimer()
+        {
+            _timeLeft = 10;
+            timerGameRequest.Start();
+        }
+
+
 
         // Countdown Forms Timer --------------------------------------------------------------------------------------------------------
         private void TimerGameRequest_Tick(object sender, EventArgs e)
         {
             try
             {
-
                 if (_timeLeft > 0)
                 {
                     // Display the new time left
@@ -188,8 +233,21 @@ namespace IP_GameChat
                     // If  out of time, stop the timer, show
                     // a MessageBox.
                     timerGameRequest.Stop();
-                    textChatlist.Items.Add(Connection.User.Name + " hat dem Spiel nicht zugestimmt");
+
+                    if (Connection.HeAngefragt)
+                    {
+                        textChatlist.Items.Add(Connection.User.Name + " hat dem Spiel nicht zugestimmt");
+                        Connection.MeAngefragt = false;
+                    }
+                    else
+                    {
+                        textChatlist.Items.Add("Du hast dem Spiel nicht zugestimmt");
+                        Connection.HeAngefragt = false;
+                    }
                     _timeLeft = 10;
+
+                    bStartGame.Enabled = true;
+                    bStopGame.Enabled = false;
                 }
             }
             catch (Exception ex)
@@ -198,25 +256,21 @@ namespace IP_GameChat
                 throw;
             }
         }
-
+        
         // Sync Forms Timer --------------------------------------------------------------------------------------------------------
         private void TimerSync_Tick(object sender, EventArgs e)
         {
+            timerCount++;
+
             try
             {
-                Connection.SendSyncData();
+                Connection.SendData("sync", "Synchronisiere", Convert.ToString(timerCount));
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
                 throw;
             }
-        }
-
-        //--------------------------------------------------------------------------------------------------------
-        private void bStopGame_Click(object sender, EventArgs e)
-        {
-
         }
 
         //--------------------------------------------------------------------------------------------------------
@@ -395,6 +449,24 @@ namespace IP_GameChat
 
         }
 
+        private void labelInfobox_Click(object sender, EventArgs e)
+        {
 
+        }
+
+        private void labelGewonnen_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void labelVerloren_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void labelRunde_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

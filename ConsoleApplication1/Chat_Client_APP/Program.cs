@@ -10,7 +10,7 @@ namespace IP_GameChat
 {
     internal class Program
     {
-        public static Form1 Form1;
+        public static Form Form1;
         public static Teilnehmer User;
         public static System.Timers.Timer AppTimer;
         /// <summary>
@@ -26,11 +26,10 @@ namespace IP_GameChat
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            Application.Run(Form1 = new Form1());
+            Application.Run(Form1 = new Form());
 
             AppTimer.Start();
             //Application.Run(new Form1());
-
         }
     }
 }

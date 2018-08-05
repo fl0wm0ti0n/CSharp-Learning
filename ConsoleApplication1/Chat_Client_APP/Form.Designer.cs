@@ -1,6 +1,6 @@
 ﻿namespace IP_GameChat
 {
-    public partial class Form1
+    public partial class Form
     {
         /// <summary>
         /// Erforderliche Designervariable.
@@ -41,7 +41,7 @@
             this.textIP2 = new System.Windows.Forms.TextBox();
             this.textChat = new System.Windows.Forms.TextBox();
             this.textChatlist = new System.Windows.Forms.ListBox();
-            this.bStart = new System.Windows.Forms.Button();
+            this.bConnect = new System.Windows.Forms.Button();
             this.bSend = new System.Windows.Forms.Button();
             this.bSpalte1 = new System.Windows.Forms.Button();
             this.bSpalte2 = new System.Windows.Forms.Button();
@@ -58,10 +58,22 @@
             this.txtName = new System.Windows.Forms.TextBox();
             this.timerGameRequest = new System.Windows.Forms.Timer(this.components);
             this.timerSync = new System.Windows.Forms.Timer(this.components);
+            this.boxRunde = new System.Windows.Forms.GroupBox();
+            this.labelRunde = new System.Windows.Forms.Label();
+            this.boxGewonnen = new System.Windows.Forms.GroupBox();
+            this.labelGewonnen = new System.Windows.Forms.Label();
+            this.boxVerloren = new System.Windows.Forms.GroupBox();
+            this.labelVerloren = new System.Windows.Forms.Label();
+            this.boxInfo = new System.Windows.Forms.GroupBox();
+            this.labelInfobox = new System.Windows.Forms.Label();
             this.boxClient1.SuspendLayout();
             this.boxClient2.SuspendLayout();
             this.panelForButtons.SuspendLayout();
             this.boxName.SuspendLayout();
+            this.boxRunde.SuspendLayout();
+            this.boxGewonnen.SuspendLayout();
+            this.boxVerloren.SuspendLayout();
+            this.boxInfo.SuspendLayout();
             this.SuspendLayout();
             // 
             // boxClient1
@@ -176,6 +188,7 @@
             // 
             this.textChat.BackColor = System.Drawing.Color.LightCyan;
             this.textChat.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.textChat.Enabled = false;
             this.textChat.Location = new System.Drawing.Point(12, 521);
             this.textChat.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.textChat.Name = "textChat";
@@ -197,25 +210,26 @@
             this.textChatlist.TabIndex = 3;
             this.textChatlist.SelectedIndexChanged += new System.EventHandler(this.textChatlist_SelectedIndexChanged);
             // 
-            // bStart
+            // bConnect
             // 
-            this.bStart.BackColor = System.Drawing.Color.SteelBlue;
-            this.bStart.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.bStart.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
-            this.bStart.FlatAppearance.BorderSize = 0;
-            this.bStart.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.bStart.Location = new System.Drawing.Point(364, 16);
-            this.bStart.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.bStart.Name = "bStart";
-            this.bStart.Size = new System.Drawing.Size(66, 71);
-            this.bStart.TabIndex = 4;
-            this.bStart.Text = "Connect";
-            this.bStart.UseVisualStyleBackColor = false;
-            this.bStart.Click += new System.EventHandler(this.bStart_Click);
+            this.bConnect.BackColor = System.Drawing.Color.SteelBlue;
+            this.bConnect.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.bConnect.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
+            this.bConnect.FlatAppearance.BorderSize = 0;
+            this.bConnect.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.bConnect.Location = new System.Drawing.Point(364, 16);
+            this.bConnect.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.bConnect.Name = "bConnect";
+            this.bConnect.Size = new System.Drawing.Size(72, 71);
+            this.bConnect.TabIndex = 4;
+            this.bConnect.Text = "Connect";
+            this.bConnect.UseVisualStyleBackColor = false;
+            this.bConnect.Click += new System.EventHandler(this.bConnect_Click);
             // 
             // bSend
             // 
             this.bSend.BackColor = System.Drawing.Color.SteelBlue;
+            this.bSend.Enabled = false;
             this.bSend.Location = new System.Drawing.Point(492, 518);
             this.bSend.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.bSend.Name = "bSend";
@@ -228,6 +242,7 @@
             // bSpalte1
             // 
             this.bSpalte1.BackColor = System.Drawing.Color.SkyBlue;
+            this.bSpalte1.Enabled = false;
             this.bSpalte1.ForeColor = System.Drawing.Color.White;
             this.bSpalte1.Location = new System.Drawing.Point(0, 3);
             this.bSpalte1.Name = "bSpalte1";
@@ -240,6 +255,7 @@
             // bSpalte2
             // 
             this.bSpalte2.BackColor = System.Drawing.Color.SkyBlue;
+            this.bSpalte2.Enabled = false;
             this.bSpalte2.ForeColor = System.Drawing.Color.White;
             this.bSpalte2.Location = new System.Drawing.Point(91, 3);
             this.bSpalte2.Name = "bSpalte2";
@@ -252,6 +268,7 @@
             // bSpalte3
             // 
             this.bSpalte3.BackColor = System.Drawing.Color.SkyBlue;
+            this.bSpalte3.Enabled = false;
             this.bSpalte3.ForeColor = System.Drawing.Color.White;
             this.bSpalte3.Location = new System.Drawing.Point(182, 3);
             this.bSpalte3.Name = "bSpalte3";
@@ -264,6 +281,7 @@
             // bSpalte4
             // 
             this.bSpalte4.BackColor = System.Drawing.Color.SkyBlue;
+            this.bSpalte4.Enabled = false;
             this.bSpalte4.ForeColor = System.Drawing.Color.White;
             this.bSpalte4.Location = new System.Drawing.Point(273, 3);
             this.bSpalte4.Name = "bSpalte4";
@@ -276,6 +294,7 @@
             // bSpalte5
             // 
             this.bSpalte5.BackColor = System.Drawing.Color.SkyBlue;
+            this.bSpalte5.Enabled = false;
             this.bSpalte5.ForeColor = System.Drawing.Color.White;
             this.bSpalte5.Location = new System.Drawing.Point(364, 3);
             this.bSpalte5.Name = "bSpalte5";
@@ -288,6 +307,7 @@
             // bSpalte6
             // 
             this.bSpalte6.BackColor = System.Drawing.Color.SkyBlue;
+            this.bSpalte6.Enabled = false;
             this.bSpalte6.ForeColor = System.Drawing.Color.White;
             this.bSpalte6.Location = new System.Drawing.Point(455, 3);
             this.bSpalte6.Name = "bSpalte6";
@@ -300,6 +320,7 @@
             // bSpalte7
             // 
             this.bSpalte7.BackColor = System.Drawing.Color.SkyBlue;
+            this.bSpalte7.Enabled = false;
             this.bSpalte7.ForeColor = System.Drawing.Color.White;
             this.bSpalte7.Location = new System.Drawing.Point(546, 3);
             this.bSpalte7.Name = "bSpalte7";
@@ -326,10 +347,11 @@
             // bStartGame
             // 
             this.bStartGame.BackColor = System.Drawing.Color.SkyBlue;
+            this.bStartGame.Enabled = false;
             this.bStartGame.ForeColor = System.Drawing.Color.White;
-            this.bStartGame.Location = new System.Drawing.Point(447, 17);
+            this.bStartGame.Location = new System.Drawing.Point(442, 16);
             this.bStartGame.Name = "bStartGame";
-            this.bStartGame.Size = new System.Drawing.Size(95, 29);
+            this.bStartGame.Size = new System.Drawing.Size(100, 33);
             this.bStartGame.TabIndex = 13;
             this.bStartGame.Text = "Starte Spiel";
             this.bStartGame.UseVisualStyleBackColor = false;
@@ -338,10 +360,11 @@
             // bStopGame
             // 
             this.bStopGame.BackColor = System.Drawing.Color.SkyBlue;
+            this.bStopGame.Enabled = false;
             this.bStopGame.ForeColor = System.Drawing.Color.White;
-            this.bStopGame.Location = new System.Drawing.Point(447, 48);
+            this.bStopGame.Location = new System.Drawing.Point(442, 55);
             this.bStopGame.Name = "bStopGame";
-            this.bStopGame.Size = new System.Drawing.Size(95, 29);
+            this.bStopGame.Size = new System.Drawing.Size(100, 32);
             this.bStopGame.TabIndex = 14;
             this.bStopGame.Text = "Beende Spiel";
             this.bStopGame.UseVisualStyleBackColor = false;
@@ -390,19 +413,120 @@
             // 
             this.timerSync.Tick += new System.EventHandler(this.TimerSync_Tick);
             // 
-            // Form1
+            // boxRunde
+            // 
+            this.boxRunde.Controls.Add(this.labelRunde);
+            this.boxRunde.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.boxRunde.Location = new System.Drawing.Point(188, 87);
+            this.boxRunde.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.boxRunde.Name = "boxRunde";
+            this.boxRunde.Padding = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.boxRunde.Size = new System.Drawing.Size(80, 46);
+            this.boxRunde.TabIndex = 4;
+            this.boxRunde.TabStop = false;
+            this.boxRunde.Text = "Runde";
+            // 
+            // labelRunde
+            // 
+            this.labelRunde.AutoSize = true;
+            this.labelRunde.Font = new System.Drawing.Font("Open Sans Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelRunde.Location = new System.Drawing.Point(27, 15);
+            this.labelRunde.Name = "labelRunde";
+            this.labelRunde.Size = new System.Drawing.Size(19, 22);
+            this.labelRunde.TabIndex = 15;
+            this.labelRunde.Text = "0";
+            this.labelRunde.Click += new System.EventHandler(this.labelRunde_Click);
+            // 
+            // boxGewonnen
+            // 
+            this.boxGewonnen.Controls.Add(this.labelGewonnen);
+            this.boxGewonnen.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.boxGewonnen.Location = new System.Drawing.Point(358, 87);
+            this.boxGewonnen.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.boxGewonnen.Name = "boxGewonnen";
+            this.boxGewonnen.Padding = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.boxGewonnen.Size = new System.Drawing.Size(78, 46);
+            this.boxGewonnen.TabIndex = 5;
+            this.boxGewonnen.TabStop = false;
+            this.boxGewonnen.Text = "Gewonnen";
+            // 
+            // labelGewonnen
+            // 
+            this.labelGewonnen.AutoSize = true;
+            this.labelGewonnen.Font = new System.Drawing.Font("Open Sans Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelGewonnen.Location = new System.Drawing.Point(25, 15);
+            this.labelGewonnen.Name = "labelGewonnen";
+            this.labelGewonnen.Size = new System.Drawing.Size(19, 22);
+            this.labelGewonnen.TabIndex = 17;
+            this.labelGewonnen.Text = "0";
+            this.labelGewonnen.Click += new System.EventHandler(this.labelGewonnen_Click);
+            // 
+            // boxVerloren
+            // 
+            this.boxVerloren.Controls.Add(this.labelVerloren);
+            this.boxVerloren.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.boxVerloren.Location = new System.Drawing.Point(274, 87);
+            this.boxVerloren.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.boxVerloren.Name = "boxVerloren";
+            this.boxVerloren.Padding = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.boxVerloren.Size = new System.Drawing.Size(78, 46);
+            this.boxVerloren.TabIndex = 6;
+            this.boxVerloren.TabStop = false;
+            this.boxVerloren.Text = "Verloren";
+            // 
+            // labelVerloren
+            // 
+            this.labelVerloren.AutoSize = true;
+            this.labelVerloren.Font = new System.Drawing.Font("Open Sans Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelVerloren.Location = new System.Drawing.Point(26, 15);
+            this.labelVerloren.Name = "labelVerloren";
+            this.labelVerloren.Size = new System.Drawing.Size(19, 22);
+            this.labelVerloren.TabIndex = 16;
+            this.labelVerloren.Text = "0";
+            this.labelVerloren.Click += new System.EventHandler(this.labelVerloren_Click);
+            // 
+            // boxInfo
+            // 
+            this.boxInfo.Controls.Add(this.labelInfobox);
+            this.boxInfo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.boxInfo.Location = new System.Drawing.Point(442, 87);
+            this.boxInfo.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.boxInfo.Name = "boxInfo";
+            this.boxInfo.Padding = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.boxInfo.Size = new System.Drawing.Size(100, 46);
+            this.boxInfo.TabIndex = 6;
+            this.boxInfo.TabStop = false;
+            this.boxInfo.Text = "Infobox";
+            // 
+            // labelInfobox
+            // 
+            this.labelInfobox.AutoSize = true;
+            this.labelInfobox.BackColor = System.Drawing.Color.Transparent;
+            this.labelInfobox.Font = new System.Drawing.Font("Open Sans Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelInfobox.Location = new System.Drawing.Point(3, 15);
+            this.labelInfobox.Name = "labelInfobox";
+            this.labelInfobox.Size = new System.Drawing.Size(69, 22);
+            this.labelInfobox.TabIndex = 18;
+            this.labelInfobox.Text = "-empty-";
+            this.labelInfobox.Click += new System.EventHandler(this.labelInfobox_Click);
+            // 
+            // Form
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.HotTrack;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.ClientSize = new System.Drawing.Size(1219, 547);
+            this.Controls.Add(this.boxVerloren);
+            this.Controls.Add(this.boxInfo);
+            this.Controls.Add(this.boxGewonnen);
+            this.Controls.Add(this.boxRunde);
             this.Controls.Add(this.boxName);
             this.Controls.Add(this.bStopGame);
             this.Controls.Add(this.bStartGame);
             this.Controls.Add(this.panelForButtons);
             this.Controls.Add(this.bSend);
-            this.Controls.Add(this.bStart);
+            this.Controls.Add(this.bConnect);
             this.Controls.Add(this.textChatlist);
             this.Controls.Add(this.textChat);
             this.Controls.Add(this.boxClient2);
@@ -412,7 +536,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.MinimizeBox = false;
-            this.Name = "Form1";
+            this.Name = "Form";
             this.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.ShowIcon = false;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
@@ -425,6 +549,14 @@
             this.panelForButtons.ResumeLayout(false);
             this.boxName.ResumeLayout(false);
             this.boxName.PerformLayout();
+            this.boxRunde.ResumeLayout(false);
+            this.boxRunde.PerformLayout();
+            this.boxGewonnen.ResumeLayout(false);
+            this.boxGewonnen.PerformLayout();
+            this.boxVerloren.ResumeLayout(false);
+            this.boxVerloren.PerformLayout();
+            this.boxInfo.ResumeLayout(false);
+            this.boxInfo.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -444,7 +576,7 @@
         private System.Windows.Forms.TextBox textIP2;
         private System.Windows.Forms.TextBox textChat;
         private System.Windows.Forms.ListBox textChatlist;
-        private System.Windows.Forms.Button bStart;
+        private System.Windows.Forms.Button bConnect;
         private System.Windows.Forms.Button bSend;
         private System.Windows.Forms.Button bSpalte1;
         private System.Windows.Forms.Button bSpalte2;
@@ -459,8 +591,16 @@
         private System.Windows.Forms.GroupBox boxName;
         private System.Windows.Forms.Button bChangeName;
         private System.Windows.Forms.TextBox txtName;
-        private System.Windows.Forms.Timer timerGameRequest;
+        public System.Windows.Forms.Timer timerGameRequest;
         private System.Windows.Forms.Timer timerSync;
+        private System.Windows.Forms.GroupBox boxRunde;
+        private System.Windows.Forms.GroupBox boxGewonnen;
+        private System.Windows.Forms.GroupBox boxVerloren;
+        private System.Windows.Forms.GroupBox boxInfo;
+        private System.Windows.Forms.Label labelRunde;
+        private System.Windows.Forms.Label labelGewonnen;
+        private System.Windows.Forms.Label labelVerloren;
+        private System.Windows.Forms.Label labelInfobox;
     }
 }
 
