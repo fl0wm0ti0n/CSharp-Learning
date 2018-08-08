@@ -586,8 +586,8 @@
         private System.Windows.Forms.Button bSpalte6;
         private System.Windows.Forms.Button bSpalte7;
         private System.Windows.Forms.Panel panelForButtons;
-        private System.Windows.Forms.Button bStartGame;
-        private System.Windows.Forms.Button bStopGame;
+        public System.Windows.Forms.Button bStartGame;
+        public System.Windows.Forms.Button bStopGame;
         private System.Windows.Forms.GroupBox boxName;
         private System.Windows.Forms.Button bChangeName;
         private System.Windows.Forms.TextBox txtName;

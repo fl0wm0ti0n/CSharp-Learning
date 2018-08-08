@@ -63,6 +63,11 @@ namespace IP_GameChat
             throw new NotImplementedException();
         }
 
+        ~Game()
+        {
+            Dispose();
+        }
+
         public ISite Site { get; set; }
         public event EventHandler Disposed;
     }

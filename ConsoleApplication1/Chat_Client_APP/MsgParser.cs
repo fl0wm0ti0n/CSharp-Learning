@@ -10,7 +10,7 @@ namespace IP_GameChat
 {
     public class MsgParser
     {
-        string _name, _Id, _host, _time, _msgtyp, _message, _value;
+        string _name, _Id, _host, _time, _msgtyp, _value;
 
         public MsgParser(string msg)
         {
@@ -24,7 +24,7 @@ namespace IP_GameChat
             _host = msg.Substring((msg.IndexOf("<host>") + "<host>".Length), (msg.LastIndexOf("</host>")) - (msg.IndexOf("<host>") + "<host>".Length));
             _time = msg.Substring((msg.IndexOf("<time>") + "<time>".Length), (msg.LastIndexOf("</time>")) - (msg.IndexOf("<time>") + "<time>".Length));
             _msgtyp = msg.Substring((msg.IndexOf("<msgtyp>") + "<msgtyp>".Length), (msg.LastIndexOf("</msgtyp>")) - (msg.IndexOf("<msgtyp>") + "<msgtyp>".Length));
-            _message = msg.Substring((msg.IndexOf("<message>") + "<message>".Length), (msg.LastIndexOf("</message>")) - (msg.IndexOf("<message>") + "<message>".Length));
+            Message = msg.Substring((msg.IndexOf("<message>") + "<message>".Length), (msg.LastIndexOf("</message>")) - (msg.IndexOf("<message>") + "<message>".Length));
             _value = msg.Substring((msg.IndexOf("<value>") + "<value>".Length), (msg.LastIndexOf("</value>")) - (msg.IndexOf("<value>") + "<value>".Length));
         }   
 
@@ -33,34 +33,32 @@ namespace IP_GameChat
         }
  
         // Properties
-        public virtual string Name
+        public string Name
         {
             get => _name;
         }
 
-        public virtual string Id
+        public string Id
         {
             get => _Id;
         }
 
-        public virtual string Host
+        public string Host
         {
             get => _host;
         }
 
-        public virtual string Time
+        public string Time
         {
             get => _time;
         }
-        public virtual string MsgTyp
+        public string MsgTyp
         {
             get => _msgtyp;
         }
-        public virtual string Message
-        {
-            get => _message;
-        }
-        public virtual string Value
+        public string Message { get; set; }
+
+        public string Value
         {
             get => _value;
         }

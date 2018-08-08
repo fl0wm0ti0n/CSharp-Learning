@@ -16,7 +16,7 @@ namespace IP_GameChat
     public partial class Form : System.Windows.Forms.Form
     {
         private static int _nNumberOf = 7 * 5;
-        private static int _timeLeft = 10;
+        public int TimeLeft = 10;
         Rectangle[,] _spielfeld = new Rectangle[7, 5];
         Point[] _point = new Point[_nNumberOf];
         Size[] _size = new Size[_nNumberOf];
@@ -35,6 +35,8 @@ namespace IP_GameChat
         // Wird ausgeführt wenn die Form geladen wird ---------------------------------------------------------------------------------------
         private void Form1_Load(object sender, EventArgs e)
         {
+            timerGameRequest.Enabled = false;
+
             DoubleBuffered = true;
 
             Paint += Form1_Paint;
@@ -74,13 +76,27 @@ namespace IP_GameChat
             }
         }
 
+        delegate void SetTextCallback(string message);
+
         // Fügt Text in den Chat ein --------------------------------------------------------------------------------------------------------
         public void AddTextToChat(string message)
         {
+ 
             if (message.Length != 0)
             {
-                textChatlist.Items.Add(message);
+
+                if (textChatlist.InvokeRequired)
+                {
+                    SetTextCallback d = new SetTextCallback(AddTextToChat);
+                    this.Invoke(d, new object[] { message });
+                }
+                else
+                {
+                    textChatlist.Items.Add(message);
+                }
             }
+
+
         }
 
         // Sendet die Textnachricht per Button -----------------------------------------------------------------------------------------------
@@ -150,8 +166,14 @@ namespace IP_GameChat
             e.Graphics.FillRectangle(Brushes.SkyBlue, _spielfeld[1, 1]);
         }
 
-        // Starte das Spiel oder Frage um ein Spiel an --------------------------------------------------------------------------------------------------------
+        // Button - Starte das Spiel oder Frage um ein Spiel an --------------------------------------------------------------------------------------------------------
         private void bStartGame_Click(object sender, EventArgs e)
+        {
+            StartGameOrNot(sender, e);
+        }
+
+        // Starte das Spiel oder Frage um ein Spiel an --------------------------------------------------------------------------------------------------------
+        private void StartGameOrNot(object sender, EventArgs e)
         {
             // Wenn Bereits vom anderen Spieler angefragt wurde starte das Spiel, Ansonsten Frage an!
             if (!Connection.MeAngefragt && Connection.HeAngefragt)
@@ -161,72 +183,99 @@ namespace IP_GameChat
                 Connection.MeAngefragt = false;
                 Connection.HeAngefragt = false;
 
-                textChatlist.Items.Add("Spiel gestartet ...");
+                textChatlist.Items.Add("Spiel gestartet - Angefrage wurde akzeptiert");
             }
             // Wenn der andere Spieler angefragt hat und Ich angefragt habe, starte das Spiel
             else if (Connection.MeAngefragt && Connection.HeAngefragt)
             {
                 GameProcess.StartTheGame();
-                
+
                 Connection.MeAngefragt = false;
                 Connection.HeAngefragt = false;
 
-                textChatlist.Items.Add("Spiel gestartet ...");
+                textChatlist.Items.Add("Spiel gestartet - Beide haben Angefragt");
             }
             // Frage an
             else
             {
-                _timeLeft = 10;
+                TimeLeft = 10;
                 GameProcess.GameRequest();
-                timerGameRequest.Start();
+                new GlobalTimer();
+                GlobalTimer.Atimer.Start();
 
                 Connection.MeAngefragt = true;
 
                 textChatlist.Items.Add("Warte auf anderen Spieler");
             }
+            SperreStart();
+
+        }
+
+        // Button - beende das Spiel oder Stoppe die Anfrage--------------------------------------------------------------------------------------------------------
+        private void bStopGame_Click(object sender, EventArgs e)
+        {
+            StoppGameOrNot(sender, e);
+        }
+
+        // beende das Spiel oder Stoppe die Anfrage--------------------------------------------------------------------------------------------------------
+        private void StoppGameOrNot(object sender, EventArgs e)
+        {
+            if (GlobalTimer.Atimer.Enabled)
+            {
+                textChatlist.Items.Add("bStopGame_Click wurde mit IF aufgerufen");
+                //Timer Stoppen & Resetten
+                GlobalTimer.Atimer.Stop();
+                GlobalTimer.Atimer.Dispose();
+                TimeLeft = 10;
+
+                Connection.MeAngefragt = true;
+            }
+
+            else
+            {
+                textChatlist.Items.Add("bStopGame_Click wurde mit ELSE aufgerufen");
+                Connection.MeAngefragt = false;
+                Connection.HeAngefragt = false;
+                GameProcess.StopTheGame();
+            }
+
+            SperreStop();
+        }
+
+        // beende das Spiel oder Stoppe die Anfrage--------------------------------------------------------------------------------------------------------
+        public void SperreStart()
+        {
+
             bStartGame.Enabled = false;
             bStopGame.Enabled = true;
         }
 
-        // beende das Spiel oder Stoppe die Anfrage--------------------------------------------------------------------------------------------------------
-        private void bStopGame_Click(object sender, EventArgs e)
+        public void SperreStop()
         {
-            if (timerGameRequest.Enabled)
-            {
-                //Timer Stoppen & Resetten
-                timerGameRequest.Stop();
-                _timeLeft = 10;
-
-                Connection.MeAngefragt = true;
-            }
-            else
-            {
-                GameProcess.StopTheGame();
-            }
             bStartGame.Enabled = true;
             bStopGame.Enabled = false;
         }
 
         // beende das Spiel oder Stoppe die Anfrage--------------------------------------------------------------------------------------------------------
-        public void StartTimer()
-        {
-            _timeLeft = 10;
-            timerGameRequest.Start();
-        }
-
-
-
+//        public void StartTimer()
+//        {
+//            _timeLeft = 10;
+//            timerGameRequest.Enabled = true;
+//            timerGameRequest.Start();
+//        }
+        
         // Countdown Forms Timer --------------------------------------------------------------------------------------------------------
-        private void TimerGameRequest_Tick(object sender, EventArgs e)
+        public void TimerGameRequest_Tick(object sender, EventArgs e)
         {
+            textChatlist.Items.Add("TimerGameRequest_Tick wurde aufgerufen");
             try
             {
-                if (_timeLeft > 0)
+                if (TimeLeft > 0)
                 {
                     // Display the new time left
                     // by updating the Time Left label.
-                    _timeLeft--;
-                    textChatlist.Items.Add("Noch " + _timeLeft + " Sekunden um das Spiel zu starten");
+                    TimeLeft--;
+                    textChatlist.Items.Add("Noch " + TimeLeft + " Sekunden um das Spiel zu starten");
                 }
                 else
                 {
@@ -234,7 +283,7 @@ namespace IP_GameChat
                     // a MessageBox.
                     timerGameRequest.Stop();
 
-                    if (Connection.HeAngefragt)
+                    if (Connection.MeAngefragt)
                     {
                         textChatlist.Items.Add(Connection.User.Name + " hat dem Spiel nicht zugestimmt");
                         Connection.MeAngefragt = false;
@@ -244,7 +293,7 @@ namespace IP_GameChat
                         textChatlist.Items.Add("Du hast dem Spiel nicht zugestimmt");
                         Connection.HeAngefragt = false;
                     }
-                    _timeLeft = 10;
+                    TimeLeft = 10;
 
                     bStartGame.Enabled = true;
                     bStopGame.Enabled = false;
@@ -256,7 +305,7 @@ namespace IP_GameChat
                 throw;
             }
         }
-        
+
         // Sync Forms Timer --------------------------------------------------------------------------------------------------------
         private void TimerSync_Tick(object sender, EventArgs e)
         {

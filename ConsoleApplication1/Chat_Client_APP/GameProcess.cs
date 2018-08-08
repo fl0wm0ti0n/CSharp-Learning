@@ -22,6 +22,11 @@ namespace IP_GameChat
             var game = new Game(Program.User);
 
             var startspieler = BerechneSpielerStart();
+
+            var gameValue = startspieler.Id;
+            var gameMessage = "start";
+
+            Connection.SendData("game", gameMessage, gameValue);
         }
 
         // Spieler setzt einen Coin

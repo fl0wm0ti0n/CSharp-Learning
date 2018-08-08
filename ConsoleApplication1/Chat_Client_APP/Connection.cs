@@ -83,7 +83,6 @@ namespace IP_GameChat
         // Entscheide was mit der Nachricht getan werden soll ------------------------------------------------------------------------------------------------------
         public static void DecideWhatToDoWithGameData(MsgParser newParserMsg)
         {
-
             try
             {
                 switch (newParserMsg.Message)
@@ -91,14 +90,21 @@ namespace IP_GameChat
                     case "spalte":
                         break;
                     case "anfrage":
-                        Program.Form1.StartTimer();
                         HeAngefragt = true;
+                        new GlobalTimer();
+                        GlobalTimer.Atimer.Start();
                         break;
                     case "gewonnen":
                         break;
-                    case "beenden":
+                    case "start":
+                        Program.Form1.SperreStart();
+                        MeAngefragt = false;
+                        HeAngefragt = false;
                         break;
-                    default:
+                    case "beenden":
+                        //Program.Form1.SperreStop();
+                        MeAngefragt = false;
+                        HeAngefragt = false;
                         break;
                 }
             }
