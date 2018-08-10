@@ -12,9 +12,14 @@ using System.Net.Sockets;
 
 namespace IP_GameChat
 {
-    public class Teilnehmer
+    public class Teilnehmer : IDisposable
     {
-        // Ctor
+
+
+        /// <summary>
+        ///     Konstruktor.
+        /// </summary>
+
         public Teilnehmer(string name, string host, string whois)
         {
             Name = name;
@@ -23,18 +28,40 @@ namespace IP_GameChat
             Id = name + teilnehmerGuid;
             WhoIs = whois;
         }
+        
 
-        // Liefert den Teilnehmer Namen
+        /// <summary>
+        ///     Properties.
+        /// </summary>
+
         public string Name { get; set; }
 
-        // Liefert eine einzigartige Teilnehmer ID
         public string Id { get; set; }
 
-        // Liefert den Hostnamen des Teilnehmers
         public string Host { get; }
 
-        // Liefert den Hostnamen des Teilnehmers
         public string WhoIs { get; }
 
+
+        /// <summary>
+        ///     Destructor.
+        /// </summary>
+        
+        ~Teilnehmer()
+        {
+            Dispose();
+        }
+
+
+        /// <summary>
+        ///     Verwendete Ressourcen bereinigen.
+        /// </summary>
+
+        public void Dispose()
+        {
+
+            GC.SuppressFinalize(this);
+
+        }
     }
 }

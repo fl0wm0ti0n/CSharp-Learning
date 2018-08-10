@@ -10,12 +10,21 @@ namespace IP_GameChat
 {
     internal class Program
     {
+
+
+        /// <summary>
+        /// Klassenvariablen Deklaration.
+        /// </summary>
+
         public static Form Form1;
         public static Teilnehmer User;
         public static System.Timers.Timer AppTimer;
+
+
         /// <summary>
         /// Der Haupteinstiegspunkt für die Anwendung.
         /// </summary>
+        
         [STAThread]
         static void Main()
         {
@@ -29,7 +38,6 @@ namespace IP_GameChat
             Application.Run(Form1 = new Form());
 
             AppTimer.Start();
-            //Application.Run(new Form1());
         }
     }
 }

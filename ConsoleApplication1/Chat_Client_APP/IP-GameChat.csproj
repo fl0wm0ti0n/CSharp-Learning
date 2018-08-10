@@ -49,7 +49,10 @@
   <ItemGroup>
     <Compile Include="Chat.cs" />
     <Compile Include="Connection.cs" />
-    <Compile Include="DoWhenTimerIntervalElapsed.cs" />
+    <Compile Include="GlobalVariables.cs" />
+    <Compile Include="ReceiveBinaryData.cs" />
+    <Compile Include="SendBinaryData.cs" />
+    <Compile Include="StartGameOrRequestForGame.cs" />
     <Compile Include="Form.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -57,13 +60,12 @@
       <DependentUpon>Form.cs</DependentUpon>
     </Compile>
     <Compile Include="MsgParser.cs" />
+    <Compile Include="StopGameOrStopRequest.cs" />
     <Compile Include="Teilnehmer.cs" />
-    <Compile Include="Game.cs" />
-    <Compile Include="GameProcess.cs" />
+    <Compile Include="SpielSchnittstelle.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="GlobalTimer.cs" />
-    <Compile Include="WinCalculation.cs" />
     <EmbeddedResource Include="Form.resx">
       <DependentUpon>Form.cs</DependentUpon>
     </EmbeddedResource>
@@ -88,6 +90,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\VierGewinnt\VierGewinnt.csproj">
+      <Project>{13c1a9c2-28f9-43d8-8c43-457cc7853940}</Project>
+      <Name>VierGewinnt</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

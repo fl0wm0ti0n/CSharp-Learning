@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ÜbungsProgramm", "ConsoleA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IP-GameChat", "Chat_Client_APP\IP-GameChat.csproj", "{6486489A-A2BB-4904-86BB-A730C3313FB0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VierGewinnt", "VierGewinnt\VierGewinnt.csproj", "{13C1A9C2-28F9-43D8-8C43-457CC7853940}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{6486489A-A2BB-4904-86BB-A730C3313FB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6486489A-A2BB-4904-86BB-A730C3313FB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6486489A-A2BB-4904-86BB-A730C3313FB0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13C1A9C2-28F9-43D8-8C43-457CC7853940}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13C1A9C2-28F9-43D8-8C43-457CC7853940}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13C1A9C2-28F9-43D8-8C43-457CC7853940}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13C1A9C2-28F9-43D8-8C43-457CC7853940}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

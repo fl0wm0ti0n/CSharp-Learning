@@ -56,7 +56,6 @@
             this.boxName = new System.Windows.Forms.GroupBox();
             this.bChangeName = new System.Windows.Forms.Button();
             this.txtName = new System.Windows.Forms.TextBox();
-            this.timerGameRequest = new System.Windows.Forms.Timer(this.components);
             this.timerSync = new System.Windows.Forms.Timer(this.components);
             this.boxRunde = new System.Windows.Forms.GroupBox();
             this.labelRunde = new System.Windows.Forms.Label();
@@ -404,11 +403,6 @@
             this.txtName.TabIndex = 1;
             this.txtName.TextChanged += new System.EventHandler(this.txtName_TextChanged);
             // 
-            // timerGameRequest
-            // 
-            this.timerGameRequest.Interval = 1000;
-            this.timerGameRequest.Tick += new System.EventHandler(this.TimerGameRequest_Tick);
-            // 
             // timerSync
             // 
             this.timerSync.Tick += new System.EventHandler(this.TimerSync_Tick);
@@ -591,7 +585,6 @@
         private System.Windows.Forms.GroupBox boxName;
         private System.Windows.Forms.Button bChangeName;
         private System.Windows.Forms.TextBox txtName;
-        public System.Windows.Forms.Timer timerGameRequest;
         private System.Windows.Forms.Timer timerSync;
         private System.Windows.Forms.GroupBox boxRunde;
         private System.Windows.Forms.GroupBox boxGewonnen;
