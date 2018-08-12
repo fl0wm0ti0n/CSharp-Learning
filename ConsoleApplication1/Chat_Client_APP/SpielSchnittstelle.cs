@@ -21,6 +21,7 @@ namespace IP_GameChat
             new Game(Convert.ToString(Program.User.Name));
 
             var startspieler = BerechneSpielerStart();
+            Program.Form1.EnableGameButtons();
 
             var gameValue = startspieler.Id;
             var gameMessage = "start";
@@ -53,6 +54,19 @@ namespace IP_GameChat
         {
             var gameValue = "Spiel Anfrage";
             var gameMessage = "anfrage";
+
+            SendBinaryData.SendData("game", gameMessage, gameValue);
+        }
+
+
+        /// <summary>
+        ///     Spielanfrage abhandeln.
+        /// </summary>
+
+        public static void DontAcceptGameRequest()
+        {
+            var gameValue = "Spiel Anfrage gescheitert";
+            var gameMessage = "stopanfrage";
 
             SendBinaryData.SendData("game", gameMessage, gameValue);
         }

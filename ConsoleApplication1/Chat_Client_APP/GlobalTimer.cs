@@ -49,9 +49,9 @@ namespace IP_GameChat
         
         private void OnTimerElapsed(object sender, ElapsedEventArgs elapsedEventArgs)
         {
-            StartGameOrRequestForGame.GameRequestCountDown10(sender, elapsedEventArgs);
+            StartGameOrRequestForGame.GameRequestCountDown10();
         }
-
+        
 
         /// <summary>
         ///     Verwendete Ressourcen bereinigen.

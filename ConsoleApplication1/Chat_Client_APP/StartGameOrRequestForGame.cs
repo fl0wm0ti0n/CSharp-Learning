@@ -24,15 +24,21 @@ namespace IP_GameChat
             {
                 SpielSchnittstelle.StartTheGame();
 
+                GlobalTimer.Atimer.Stop();
+                GlobalTimer.Atimer.Dispose();
+
                 GlobalVariables.MeAngefragt = false;
                 GlobalVariables.HeAngefragt = false;
 
-                Program.Form1.AddTextToChat("Spiel gestartet - Angefrage wurde akzeptiert");
+                Program.Form1.AddTextToChat("Spiel gestartet - Anfrage wurde akzeptiert");
             }
             // Wenn der andere Spieler angefragt hat und Ich angefragt habe, starte das Spiel
             else if (GlobalVariables.MeAngefragt && GlobalVariables.HeAngefragt)
             {
                 SpielSchnittstelle.StartTheGame();
+
+                GlobalTimer.Atimer.Stop();
+                GlobalTimer.Atimer.Dispose();
 
                 GlobalVariables.MeAngefragt = false;
                 GlobalVariables.HeAngefragt = false;
@@ -42,7 +48,8 @@ namespace IP_GameChat
             // Frage an
             else
             {
-                    Program.Form1.TimeLeft = 10;
+                    GlobalVariables.TimeLeft = 10;
+
                     SpielSchnittstelle.GameRequest();
                     new GlobalTimer();
                     GlobalTimer.Atimer.Start();
@@ -63,16 +70,18 @@ namespace IP_GameChat
         /// <param name="sender">Sender</param>
         /// <param name="e">Eventargumente</param>
  
-        public static void GameRequestCountDown10(object sender, EventArgs e)
+        public static void GameRequestCountDown10()
         {
+
+            
             try
             {
-                if (Program.Form1.TimeLeft > 0)
+                if (GlobalVariables.TimeLeft > 0)
                 {
                     // Display the new time left
                     // by updating the Time Left label.
-                    Program.Form1.TimeLeft--;
-                    Program.Form1.AddTextToChat("Noch " + Program.Form1.TimeLeft + " Sekunden um das Spiel zu starten");
+                    GlobalVariables.TimeLeft--;
+                    Program.Form1.AddTextToChat("Noch " + GlobalVariables.TimeLeft + " Sekunden um das Spiel zu starten");
                 }
                 else
                 {
@@ -81,20 +90,34 @@ namespace IP_GameChat
                     GlobalTimer.Atimer.Stop();
                     GlobalTimer.Atimer.Dispose();
 
+                    // Wenn Ich angefragt habe schreibe Text, sonst 
                     if (GlobalVariables.MeAngefragt)
                     {
-                        Program.Form1.AddTextToChat(ReceiveBinaryData.User.Name + " hat dem Spiel nicht zugestimmt");
+
+                        if (ReceiveBinaryData.User != null)
+                        {
+                            Program.Form1.AddTextToChat(ReceiveBinaryData.User.Name + " hat dem Spiel nicht zugestimmt");
+                        }
+                        else
+                        {
+                            Program.Form1.AddTextToChat("Das Gegenüber hat dem Spiel nicht zugestimmt");
+                        }
+
                         GlobalVariables.MeAngefragt = false;
                     }
+//                    else if (!GlobalVariables.MeAngefragt && !GlobalVariables.HeAngefragt)
+//                    {
+//                        
+//                    }
                     else
                     {
                         Program.Form1.AddTextToChat("Du hast dem Spiel nicht zugestimmt");
                         GlobalVariables.HeAngefragt = false;
                     }
-                    Program.Form1.TimeLeft = 10;
 
-                    Program.Form1.bStartGame.Enabled = true;
-                    Program.Form1.bStopGame.Enabled = false;
+                    Program.Form1.SperreStop();
+
+                    GlobalVariables.TimeLeft = 10;
                 }
             }
             catch (Exception ex)

@@ -1,14 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Net;
-using System.Net.Sockets;
 
 namespace IP_GameChat
 {
@@ -17,7 +8,7 @@ namespace IP_GameChat
 
 
         /// <summary>
-        ///     Klassenvariablen Deklaration
+        ///     Klassenvariablen Deklaration.
         /// </summary>
 
         public static Teilnehmer User;
@@ -62,27 +53,83 @@ namespace IP_GameChat
                 switch (newParserMsg.Message)
                 {
                     case "reihe":
+
                         break;
 
                     case "anfrage":
+
                         GlobalVariables.HeAngefragt = true;
+
+                        Program.Form1.bStopGame.Enabled = true;
+
+                        GlobalVariables.TimeLeft = 10;
+
                         new GlobalTimer();
                         GlobalTimer.Atimer.Start();
+
+                        break;
+
+                    case "stopanfrage":
+
+                        Program.Form1.SperreStop();
+
+                        GlobalTimer.Atimer.Stop();
+                        GlobalTimer.Atimer.Dispose();
+
+                        GlobalVariables.MeAngefragt = false;
+                        GlobalVariables.HeAngefragt = false;
+
+                        if (User != null)
+                        {
+                            Program.Form1.AddTextToChat(User.Name + " hat die Spielanfrage abgelehnt");
+                        }
+                        else
+                        {
+                            Program.Form1.AddTextToChat("Das Gegenüber hat die Spielanfrage abgelehnt");
+                        }
+
                         break;
 
                     case "gewonnen":
+
                         break;
 
                     case "start":
-                        Program.Form1.SperreStart();
+
+                        Program.Form1.bStopGame.Enabled = true;
+
+                        GlobalTimer.Atimer.Stop();
+                        GlobalTimer.Atimer.Dispose();
+
                         GlobalVariables.MeAngefragt = false;
                         GlobalVariables.HeAngefragt = false;
+
+                        if (User != null)
+                        {
+                            Program.Form1.AddTextToChat(User.Name + " hat die Spielanfrage angenommen");
+                        }
+                        else
+                        {
+                            Program.Form1.AddTextToChat("Das Gegenüber hat die Spielanfrage angenommen");
+                        }
+
                         break;
 
                     case "beenden":
-                        StopGameOrStopRequest.StopGameOrNot();
-                        GlobalVariables.MeAngefragt = false;
-                        GlobalVariables.HeAngefragt = false;
+
+                        Program.Form1.bStopGame.Enabled = true;
+
+                        if (User != null)
+                        {
+                            Program.Form1.AddTextToChat(User.Name + " hat das Spiel beendet");
+                        }
+                        else
+                        {
+                            Program.Form1.AddTextToChat("Das Gegenüber hat das Spiel beendet");
+                        }
+
+                        //StopGameOrStopRequest.Decide();
+
                         break;
                 }
             }
@@ -103,6 +150,7 @@ namespace IP_GameChat
             try
             {
                 if (User == null) User = new Teilnehmer(newParserMsg.Name, newParserMsg.Host, "he") { Id = newParserMsg.Id };
+                else {User.Name = newParserMsg.Name;}
             }
             catch (Exception ex)
             {

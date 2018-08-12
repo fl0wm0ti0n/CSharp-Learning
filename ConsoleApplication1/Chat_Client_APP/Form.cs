@@ -15,8 +15,13 @@ namespace IP_GameChat
 {
     public partial class Form : System.Windows.Forms.Form
     {
+
+
+        /// <summary>
+        ///     Klassenvariablen Deklaration.
+        /// </summary>
+
         private static int _nNumberOf = 7 * 5;
-        public int TimeLeft = 10;
         Rectangle[,] _spielfeld = new Rectangle[7, 5];
         Point[] _point = new Point[_nNumberOf];
         Size[] _size = new Size[_nNumberOf];
@@ -32,7 +37,13 @@ namespace IP_GameChat
             textIP2.Text = Connection.GetLocalIp();
         }
 
-        // Wird ausgeführt wenn die Form geladen wird ---------------------------------------------------------------------------------------
+
+        /// <summary>
+        ///     Ereignis - Windows Form wird geladen.
+        /// </summary>
+        /// <param name="sender">Sender</param>
+        /// <param name="e">EventArgs</param>
+
         private void Form1_Load(object sender, EventArgs e)
         {
 
@@ -41,7 +52,13 @@ namespace IP_GameChat
             Paint += Form1_Paint;
         }
 
-        // Wird ausgeführt wenn der Connect Button gedrückt wird ----------------------------------------------------------------------------
+
+        /// <summary>
+        ///     Ereignis - Connect-Button wird gedrück.
+        /// </summary>
+        /// <param name="sender">Sender</param>
+        /// <param name="e">EventArgs</param>
+
         private void bConnect_Click(object sender, EventArgs e)
         {
             try
@@ -75,9 +92,20 @@ namespace IP_GameChat
             }
         }
 
+
+        /// <summary>
+        ///     Delegate für Methode "AddTextToChat".
+        /// </summary>
+        /// <param name="message">Textnachricht</param>
+
         delegate void SetTextCallback(string message);
 
-        // Fügt Text in den Chat ein --------------------------------------------------------------------------------------------------------
+
+        /// <summary>
+        ///     Fügt einen Text der Chatliste hinzu.
+        /// </summary>
+        /// <param name="message">Textnachricht</param>
+
         public void AddTextToChat(string message)
         {
  
@@ -92,11 +120,18 @@ namespace IP_GameChat
                 else
                 {
                     textChatlist.Items.Add(message);
+                    textChatlist.SelectedIndex = textChatlist.Items.Count - 1;
                 }
             }
         }
 
-        // Sendet die Textnachricht per Button -----------------------------------------------------------------------------------------------
+
+        /// <summary>
+        ///     Ereignis - Send-Button wird gedrück.
+        /// </summary>
+        /// <param name="sender">Sender</param>
+        /// <param name="e">EventArgs</param>
+
         private void bSend_Click(object sender, EventArgs e)
         {
             SendBinaryData.SendData("chat", textChat.Text, "platzhalter");
@@ -105,7 +140,13 @@ namespace IP_GameChat
             textChat.Clear();
         }
 
-        // Sendet die Textnachricht per Enter ------------------------------------------------------------------------------------------------
+
+        /// <summary>
+        ///     Ereignis - Enter wird gedrückt wird gedrück.
+        /// </summary>
+        /// <param name="sender">Sender</param>
+        /// <param name="e">KeyEventArgs</param>
+
         private void textChat_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
@@ -120,7 +161,13 @@ namespace IP_GameChat
             }
         }
 
-        // Zeichnet das Spielbrett ------------------------------------------------------------------------------------------------------------
+
+        /// <summary>
+        ///     Zeichne das Spielbrett.
+        /// </summary>
+        /// <param name="sender">Sender</param>
+        /// <param name="e">PaintEventArgs</param>
+
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
             var nNumberInc  = 0;
@@ -157,41 +204,102 @@ namespace IP_GameChat
             }
         }
 
-        // Füllt ein Feld im Spielbrett--------------------------------------------------------------------------------------------------------
+
+        /// <summary>
+        ///     Fülle ein Quadrat am Spielfeld aus.
+        /// </summary>
+        /// <param name="sender">Sender</param>
+        /// <param name="e">PaintEventArgs</param>
+
         public void FillField(object sender, PaintEventArgs e)
         {
             e.Graphics.FillRectangle(Brushes.SkyBlue, _spielfeld[1, 1]);
         }
 
-        // Button - Starte das Spiel oder Frage um ein Spiel an --------------------------------------------------------------------------------------------------------
+
+        /// <summary>
+        ///     Ereignis - Start-Button wird gedrück.
+        /// </summary>
+        /// <param name="sender">Sender</param>
+        /// <param name="e">EventArgs</param>
+
         private void bStartGame_Click(object sender, EventArgs e)
         {
             StartGameOrRequestForGame.StartOrRequest();
         }
 
 
+        /// <summary>
+        ///     Ereignis - Stop-Button wird gedrück.
+        /// </summary>
+        /// <param name="sender">Sender</param>
+        /// <param name="e">EventArgs</param>
 
-        // Button - beende das Spiel oder Stoppe die Anfrage--------------------------------------------------------------------------------------------------------
         private void bStopGame_Click(object sender, EventArgs e)
         {
-            StopGameOrStopRequest.StopGameOrNot();
+            StopGameOrStopRequest.Decide();
         }
 
-        // beende das Spiel oder Stoppe die Anfrage--------------------------------------------------------------------------------------------------------
+
+        /// <summary>
+        ///     Delegate für Methode "SperreStart".
+        /// </summary>
+
+        delegate void SetStartButtonCallback();
+
+
+        /// <summary>
+        ///     Sperre den Start-Button, entsperre den Stop-Button.
+        /// </summary>
+
         public void SperreStart()
         {
-
-            bStartGame.Enabled = false;
-            bStopGame.Enabled = true;
+            if (bStartGame.InvokeRequired || bStopGame.InvokeRequired)
+            {
+                SetStartButtonCallback d = new SetStartButtonCallback(SperreStop);
+                this.Invoke(d, new object[] {});
+            }
+            else
+            {
+                bStartGame.Enabled = false;
+                bStopGame.Enabled = true;
+            }
         }
+
+
+        /// <summary>
+        ///     Delegate für Methode "SperreStop".
+        /// </summary>
+
+        delegate void SetStopButtonCallback();
+
+
+        /// <summary>
+        ///     Sperre den Stop-Button, entsperre den Start-Button.
+        /// </summary>
 
         public void SperreStop()
         {
-            bStartGame.Enabled = true;
-            bStopGame.Enabled = false;
+
+                if (bStartGame.InvokeRequired || bStopGame.InvokeRequired)
+                {
+                    SetStopButtonCallback d = new SetStopButtonCallback(SperreStop);
+                    this.Invoke(d, new object[] {});
+                }
+                else
+                {
+                    bStartGame.Enabled = true;
+                    bStopGame.Enabled = false;
+                }
         }
 
-        // Sync Forms Timer --------------------------------------------------------------------------------------------------------
+
+        /// <summary>
+        ///     Ereignis - Synchronisation Timer.
+        /// </summary>
+        /// <param name="sender">Sender</param>
+        /// <param name="e">EventArgs</param>
+
         private void TimerSync_Tick(object sender, EventArgs e)
         {
             timerCount++;
@@ -207,7 +315,13 @@ namespace IP_GameChat
             }
         }
 
-        //--------------------------------------------------------------------------------------------------------
+
+        /// <summary>
+        ///     Ereignis - Connect-Button wird gedrück.
+        /// </summary>
+        /// <param name="sender">Sender</param>
+        /// <param name="e">EventArgs</param>
+
         private void bChangeName_Click(object sender, EventArgs e)
         {
             // wenn Textfeld nicht lee ist ändere name
@@ -219,8 +333,12 @@ namespace IP_GameChat
             }
         }
 
-        // Schaltet die Spaltenbuttons wieder frei--------------------------------------------------------------------------------------------------------
-        private void EnableGameButtons()
+
+        /// <summary>
+        ///     Ereignis - Connect-Button wird gedrück.
+        /// </summary>
+
+        public void EnableGameButtons()
         {
             bSpalte1.Enabled = true;
             bSpalte2.Enabled = true;
@@ -231,7 +349,13 @@ namespace IP_GameChat
             bSpalte7.Enabled = true;
         }
 
-        // Sperrt die Spaltenbuttons wenn gesetzt--------------------------------------------------------------------------------------------------------
+
+        /// <summary>
+        ///     Ereignis - Connect-Button wird gedrück.
+        /// </summary>
+        /// <param name="sender">Sender</param>
+        /// <param name="e">EventArgs</param>
+
         private void bSpalte1_Click(object sender, EventArgs e)
         {
             SpielSchnittstelle.SetEinwurf(1);

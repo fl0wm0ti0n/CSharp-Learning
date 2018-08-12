@@ -16,32 +16,49 @@ namespace IP_GameChat
         /// <param name="sender">Sender</param>
         /// <param name="e">Eventargumente</param>
  
-        public static void StopGameOrNot()
+        public static void Decide()
         {
 
-            Program.Form1.AddTextToChat("Timer= " + Convert.ToString(GlobalTimer.Atimer.Enabled));
-
-            if (GlobalTimer.Atimer.Enabled)
+            if (GlobalVariables.MeAngefragt)
             {
-                Program.Form1.AddTextToChat("bStopGame_Click wurde mit IF aufgerufen");
 
                 //Timer Stoppen & Resetten
                 GlobalTimer.Atimer.Stop();
                 GlobalTimer.Atimer.Dispose();
 
-                GlobalVariables.MeAngefragt = true;
-            }
+                SpielSchnittstelle.DontAcceptGameRequest();
 
-            else
-            {
-                Program.Form1.AddTextToChat("bStopGame_Click wurde mit ELSE aufgerufen");
+                Program.Form1.AddTextToChat("Du hast die Anfrage abgebrochen");
 
                 GlobalVariables.MeAngefragt = false;
+            }
+            else if (GlobalVariables.HeAngefragt)
+            {
+
+                //Timer Stoppen & Resetten
+                GlobalTimer.Atimer.Stop();
+                GlobalTimer.Atimer.Dispose();
+
+                SpielSchnittstelle.DontAcceptGameRequest();
+
+                if (ReceiveBinaryData.User != null)
+                {
+                    Program.Form1.AddTextToChat(ReceiveBinaryData.User.Name + " hat das Spiel abgelehnt");
+                }
+                else
+                {
+                    Program.Form1.AddTextToChat("Das Gegenüber hat das Spiel abgelehnt");
+                }
+
                 GlobalVariables.HeAngefragt = false;
+            }
+            else
+            {
+                Program.Form1.AddTextToChat("Du hast das Spiel beendet");
 
                 SpielSchnittstelle.StopTheGame();
             }
-
+            
             Program.Form1.SperreStop();
         }
     }
