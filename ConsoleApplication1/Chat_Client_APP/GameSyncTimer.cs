@@ -3,7 +3,7 @@ using System.Timers;
 
 namespace IP_GameChat
 {
-    public class GlobalTimer : IDisposable
+    public class GameSyncTimer : IDisposable
 
     {
         
@@ -18,10 +18,10 @@ namespace IP_GameChat
         ///     Konstruktor.
         /// </summary>
 
-        public GlobalTimer()
+        public GameSyncTimer()
         {
 
-            Atimer = new Timer(1000);
+            Atimer = new Timer(500);
              
             Atimer.Elapsed += OnTimerElapsed;
 
@@ -39,7 +39,7 @@ namespace IP_GameChat
         private void OnTimerElapsed(object sender, ElapsedEventArgs elapsedEventArgs)
         {
 
-            StartGameOrRequestForGame.GameRequestCountDown10();
+            GameDataSync.SyncWins();
 
         }
         
@@ -67,7 +67,7 @@ namespace IP_GameChat
         ///     Destructor.
         /// </summary>
 
-        ~GlobalTimer()
+        ~GameSyncTimer()
         {
 
            Dispose();

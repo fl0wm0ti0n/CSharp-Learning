@@ -32,13 +32,18 @@ namespace IP_GameChat
 
         public static string SendData(string msgtyp, string message, string value)
         {
+
             if (msgtyp == "chat")
             {
+
                 MsgCount++;
                 value = Convert.ToString(MsgCount);
+
             }
+
             try
             {
+
                 // System.Text.ASCIIEncoding
                 var enc = new ASCIIEncoding();
                 var bMsg = new byte[1500];
@@ -48,11 +53,15 @@ namespace IP_GameChat
                 Connection.MySocket.Send(bMsg);
 
                 return message;
+
             }
+
             catch (Exception ex)
             {
+
                 MessageBox.Show(ex.ToString());
                 return "ERROR - Nachricht wurde nicht geschickt";
+
             }
         }
 

@@ -31,7 +31,9 @@ namespace IP_GameChat
                 Program.Form1.AddTextToChat("Du hast die Anfrage abgebrochen");
 
                 GlobalVariables.MeAngefragt = false;
+
             }
+
             else if (GlobalVariables.HeAngefragt)
             {
 
@@ -43,23 +45,33 @@ namespace IP_GameChat
 
                 if (ReceiveBinaryData.User != null)
                 {
+
                     Program.Form1.AddTextToChat(ReceiveBinaryData.User.Name + " hat das Spiel abgelehnt");
+
                 }
+
                 else
                 {
+
                     Program.Form1.AddTextToChat("Das Gegenüber hat das Spiel abgelehnt");
+
                 }
 
                 GlobalVariables.HeAngefragt = false;
+
             }
+
             else
             {
+
                 Program.Form1.AddTextToChat("Du hast das Spiel beendet");
 
                 SpielSchnittstelle.StopTheGame();
+
             }
             
             Program.Form1.SperreStop();
+
         }
     }
 }

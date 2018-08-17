@@ -16,6 +16,6 @@ namespace IP_GameChat
 
         public static bool HeAngefragt = false;
         public static bool MeAngefragt = false;
-
+        public static int TimeLeft = 10;
     }
 }

@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
 
 namespace IP_GameChat
 {
@@ -25,7 +26,7 @@ namespace IP_GameChat
         Rectangle[,] _spielfeld = new Rectangle[7, 5];
         Point[] _point = new Point[_nNumberOf];
         Size[] _size = new Size[_nNumberOf];
-        private int timerCount;
+        private int _timerCount;
 
         public Form()
         {
@@ -68,7 +69,7 @@ namespace IP_GameChat
                     Connection.ConnectWithEndPoint(textIP1.Text, textPort1.Text, textIP2.Text, textPort2.Text);
 
                     // Sperre "Connect" Button und schreibe Connected
-                    bConnect.Text = "Connected";
+                    bConnect.Text = @"Connected";
                     bConnect.Enabled = false;
                     // Enable "Send" Button
                     bSend.Enabled = true;
@@ -114,8 +115,8 @@ namespace IP_GameChat
 
                 if (textChatlist.InvokeRequired)
                 {
-                    SetTextCallback d = new SetTextCallback(AddTextToChat);
-                    this.Invoke(d, new object[] { message });
+                    SetTextCallback d = AddTextToChat;
+                    Invoke(d, message);
                 }
                 else
                 {
@@ -256,8 +257,8 @@ namespace IP_GameChat
         {
             if (bStartGame.InvokeRequired || bStopGame.InvokeRequired)
             {
-                SetStartButtonCallback d = new SetStartButtonCallback(SperreStop);
-                this.Invoke(d, new object[] {});
+                SetStartButtonCallback d = SperreStop;
+                Invoke(d, new object[] {});
             }
             else
             {
@@ -283,8 +284,8 @@ namespace IP_GameChat
 
                 if (bStartGame.InvokeRequired || bStopGame.InvokeRequired)
                 {
-                    SetStopButtonCallback d = new SetStopButtonCallback(SperreStop);
-                    this.Invoke(d, new object[] {});
+                    SetStopButtonCallback d = SperreStop;
+                    Invoke(d, new object[] {});
                 }
                 else
                 {
@@ -302,17 +303,18 @@ namespace IP_GameChat
 
         private void TimerSync_Tick(object sender, EventArgs e)
         {
-            timerCount++;
+            _timerCount++;
 
             try
             {
-                SendBinaryData.SendData("sync", "Synchronisiere", Convert.ToString(timerCount));
+                SendBinaryData.SendData("sync", "Synchronisiere", Convert.ToString(_timerCount));
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
                 throw;
             }
+
         }
 
 
@@ -327,11 +329,35 @@ namespace IP_GameChat
             // wenn Textfeld nicht lee ist ändere name
             if (!string.IsNullOrEmpty(txtName.Text))
             {
+
                 Program.User.Name = txtName.Text;
                 textChatlist.Items.Add("Der Name wurde auf '" + txtName.Text + "' geändert!");
                 txtName.Clear();
+
             }
         }
+
+        private void txtName_KeyDown(object sender, KeyEventArgs e)
+        {
+
+            if (e.KeyCode == Keys.Enter)
+            {
+
+                // wenn Textfeld nicht lee ist ändere name
+                if (!string.IsNullOrEmpty(txtName.Text))
+                {
+
+                    Program.User.Name = txtName.Text;
+                    textChatlist.Items.Add("Der Name wurde auf '" + txtName.Text + "' geändert!");
+                    txtName.Clear();
+
+                    e.Handled = true;
+                    e.SuppressKeyPress = true;
+
+                }
+            }
+        }
+
 
 
         /// <summary>
@@ -358,85 +384,62 @@ namespace IP_GameChat
 
         private void bSpalte1_Click(object sender, EventArgs e)
         {
-            SpielSchnittstelle.SetEinwurf(1);
 
-            bSpalte1.Enabled = false;
-            bSpalte2.Enabled = false;
-            bSpalte3.Enabled = false;
-            bSpalte4.Enabled = false;
-            bSpalte5.Enabled = false;
-            bSpalte6.Enabled = false;
-            bSpalte7.Enabled = false;
+            SpielSchnittstelle.SetEinwurf(1);
+            DisableGameButtons();
+
         }
 
         private void bSpalte2_Click(object sender, EventArgs e)
         {
-            SpielSchnittstelle.SetEinwurf(2);
 
-            bSpalte1.Enabled = false;
-            bSpalte2.Enabled = false;
-            bSpalte3.Enabled = false;
-            bSpalte4.Enabled = false;
-            bSpalte5.Enabled = false;
-            bSpalte6.Enabled = false;
-            bSpalte7.Enabled = false;
+            SpielSchnittstelle.SetEinwurf(2);
+            DisableGameButtons();
+
         }
 
         private void bSpalte3_Click(object sender, EventArgs e)
         {
-            SpielSchnittstelle.SetEinwurf(3);
 
-            bSpalte1.Enabled = false;
-            bSpalte2.Enabled = false;
-            bSpalte3.Enabled = false;
-            bSpalte4.Enabled = false;
-            bSpalte5.Enabled = false;
-            bSpalte6.Enabled = false;
-            bSpalte7.Enabled = false;
+            SpielSchnittstelle.SetEinwurf(3);
+            DisableGameButtons();
+
         }
 
         private void bSpalte4_Click(object sender, EventArgs e)
         {
-            SpielSchnittstelle.SetEinwurf(4);
 
-            bSpalte1.Enabled = false;
-            bSpalte2.Enabled = false;
-            bSpalte3.Enabled = false;
-            bSpalte4.Enabled = false;
-            bSpalte5.Enabled = false;
-            bSpalte6.Enabled = false;
-            bSpalte7.Enabled = false;
+            SpielSchnittstelle.SetEinwurf(4);
+            DisableGameButtons();
+
         }
 
         private void bSpalte5_Click(object sender, EventArgs e)
         {
-            SpielSchnittstelle.SetEinwurf(5);
 
-            bSpalte1.Enabled = false;
-            bSpalte2.Enabled = false;
-            bSpalte3.Enabled = false;
-            bSpalte4.Enabled = false;
-            bSpalte5.Enabled = false;
-            bSpalte6.Enabled = false;
-            bSpalte7.Enabled = false;
+            SpielSchnittstelle.SetEinwurf(5);
+            DisableGameButtons();
+
         }
 
         private void bSpalte6_Click(object sender, EventArgs e)
         {
-            SpielSchnittstelle.SetEinwurf(6);
 
-            bSpalte1.Enabled = false;
-            bSpalte2.Enabled = false;
-            bSpalte3.Enabled = false;
-            bSpalte4.Enabled = false;
-            bSpalte5.Enabled = false;
-            bSpalte6.Enabled = false;
-            bSpalte7.Enabled = false;
+            SpielSchnittstelle.SetEinwurf(6);
+            DisableGameButtons();
+
         }
 
         private void bSpalte7_Click(object sender, EventArgs e)
         {
+
             SpielSchnittstelle.SetEinwurf(7);
+            DisableGameButtons();
+
+        }
+
+        private void DisableGameButtons()
+        {
 
             bSpalte1.Enabled = false;
             bSpalte2.Enabled = false;
@@ -445,84 +448,10 @@ namespace IP_GameChat
             bSpalte5.Enabled = false;
             bSpalte6.Enabled = false;
             bSpalte7.Enabled = false;
-        }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void textBox2_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label3_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label4_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void textBox3_TextChanged(object sender, EventArgs e)
-        {
 
         }
 
         private void textChatlist_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void textChat_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void boxClient1_Enter(object sender, EventArgs e)
-        {
-
-        }
-
-        private void boxClient2_Enter(object sender, EventArgs e)
-        {
-
-        }
-
-        private void textIP1_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void textPort4_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtName_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void labelInfobox_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void labelGewonnen_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void labelVerloren_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void labelRunde_Click(object sender, EventArgs e)
         {
 
         }

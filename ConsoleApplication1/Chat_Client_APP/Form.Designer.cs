@@ -89,7 +89,6 @@
             this.boxClient1.TabIndex = 0;
             this.boxClient1.TabStop = false;
             this.boxClient1.Text = "Client 1";
-            this.boxClient1.Enter += new System.EventHandler(this.boxClient1_Enter);
             // 
             // label2
             // 
@@ -108,7 +107,6 @@
             this.label1.Size = new System.Drawing.Size(17, 15);
             this.label1.TabIndex = 2;
             this.label1.Text = "IP";
-            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // textPort1
             // 
@@ -117,7 +115,6 @@
             this.textPort1.Name = "textPort1";
             this.textPort1.Size = new System.Drawing.Size(99, 22);
             this.textPort1.TabIndex = 1;
-            this.textPort1.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
             // 
             // textIP1
             // 
@@ -126,7 +123,6 @@
             this.textIP1.Name = "textIP1";
             this.textIP1.Size = new System.Drawing.Size(99, 22);
             this.textIP1.TabIndex = 0;
-            this.textIP1.TextChanged += new System.EventHandler(this.textIP1_TextChanged);
             // 
             // boxClient2
             // 
@@ -143,7 +139,6 @@
             this.boxClient2.TabIndex = 1;
             this.boxClient2.TabStop = false;
             this.boxClient2.Text = "Client 2";
-            this.boxClient2.Enter += new System.EventHandler(this.boxClient2_Enter);
             // 
             // label4
             // 
@@ -153,7 +148,6 @@
             this.label4.Size = new System.Drawing.Size(29, 15);
             this.label4.TabIndex = 3;
             this.label4.Text = "Port";
-            this.label4.Click += new System.EventHandler(this.label4_Click);
             // 
             // label3
             // 
@@ -163,7 +157,6 @@
             this.label3.Size = new System.Drawing.Size(17, 15);
             this.label3.TabIndex = 2;
             this.label3.Text = "IP";
-            this.label3.Click += new System.EventHandler(this.label3_Click);
             // 
             // textPort2
             // 
@@ -172,7 +165,6 @@
             this.textPort2.Name = "textPort2";
             this.textPort2.Size = new System.Drawing.Size(99, 22);
             this.textPort2.TabIndex = 1;
-            this.textPort2.TextChanged += new System.EventHandler(this.textPort4_TextChanged);
             // 
             // textIP2
             // 
@@ -181,7 +173,6 @@
             this.textIP2.Name = "textIP2";
             this.textIP2.Size = new System.Drawing.Size(99, 22);
             this.textIP2.TabIndex = 0;
-            this.textIP2.TextChanged += new System.EventHandler(this.textBox3_TextChanged);
             // 
             // textChat
             // 
@@ -193,7 +184,6 @@
             this.textChat.Name = "textChat";
             this.textChat.Size = new System.Drawing.Size(474, 15);
             this.textChat.TabIndex = 2;
-            this.textChat.TextChanged += new System.EventHandler(this.textChat_TextChanged);
             this.textChat.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textChat_KeyDown);
             // 
             // textChatlist
@@ -401,7 +391,7 @@
             this.txtName.Name = "txtName";
             this.txtName.Size = new System.Drawing.Size(97, 22);
             this.txtName.TabIndex = 1;
-            this.txtName.TextChanged += new System.EventHandler(this.txtName_TextChanged);
+            this.txtName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtName_KeyDown);
             // 
             // timerSync
             // 
@@ -429,7 +419,6 @@
             this.labelRunde.Size = new System.Drawing.Size(19, 22);
             this.labelRunde.TabIndex = 15;
             this.labelRunde.Text = "0";
-            this.labelRunde.Click += new System.EventHandler(this.labelRunde_Click);
             // 
             // boxGewonnen
             // 
@@ -453,7 +442,6 @@
             this.labelGewonnen.Size = new System.Drawing.Size(19, 22);
             this.labelGewonnen.TabIndex = 17;
             this.labelGewonnen.Text = "0";
-            this.labelGewonnen.Click += new System.EventHandler(this.labelGewonnen_Click);
             // 
             // boxVerloren
             // 
@@ -477,7 +465,6 @@
             this.labelVerloren.Size = new System.Drawing.Size(19, 22);
             this.labelVerloren.TabIndex = 16;
             this.labelVerloren.Text = "0";
-            this.labelVerloren.Click += new System.EventHandler(this.labelVerloren_Click);
             // 
             // boxInfo
             // 
@@ -502,7 +489,6 @@
             this.labelInfobox.Size = new System.Drawing.Size(69, 22);
             this.labelInfobox.TabIndex = 18;
             this.labelInfobox.Text = "-empty-";
-            this.labelInfobox.Click += new System.EventHandler(this.labelInfobox_Click);
             // 
             // Form
             // 

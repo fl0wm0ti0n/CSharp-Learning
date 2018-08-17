@@ -18,9 +18,16 @@ namespace IP_GameChat
         
         public static void StartTheGame()
         {
-            new Game(Convert.ToString(Program.User.Name));
+
+            if (GlobalVariables.MeAngefragt)
+            {
+
+                //new Game(Convert.ToString(Program.User.Name));
+
+            }
 
             var startspieler = BerechneSpielerStart();
+
             Program.Form1.EnableGameButtons();
 
             var gameValue = startspieler.Id;

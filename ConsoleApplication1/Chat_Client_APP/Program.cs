@@ -38,6 +38,7 @@ namespace IP_GameChat
             Application.Run(Form1 = new Form());
 
             AppTimer.Start();
+
         }
     }
 }

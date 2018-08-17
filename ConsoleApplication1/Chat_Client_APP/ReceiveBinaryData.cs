@@ -21,22 +21,28 @@ namespace IP_GameChat
 
         public static void DecideWhatToDoWithMsg(string receivedMessage)
         {
+
             MsgParser newParserMsg = new MsgParser(receivedMessage);
 
             switch (newParserMsg.MsgTyp)
             {
+
                 case "chat":
                     WriteChat(newParserMsg);
                     break;
+
                 case "sync":
                     CreateOpponentUser(newParserMsg);
                     break;
+
                 case "game":
                     DecideWhatToDoWithGameData(newParserMsg);
                     break;
+
                 default:
                     Program.Form1.AddTextToChat("Internal ERROR in DecideWhatToDoWithMSG - Code");
                     break;
+
             }
         }
 
@@ -48,13 +54,17 @@ namespace IP_GameChat
 
         public static void DecideWhatToDoWithGameData(MsgParser newParserMsg)
         {
+
             try
             {
+
                 switch (newParserMsg.Message)
                 {
+
                     case "reihe":
 
                         break;
+
 
                     case "anfrage":
 
@@ -69,6 +79,7 @@ namespace IP_GameChat
 
                         break;
 
+
                     case "stopanfrage":
 
                         Program.Form1.SperreStop();
@@ -81,18 +92,25 @@ namespace IP_GameChat
 
                         if (User != null)
                         {
+
                             Program.Form1.AddTextToChat(User.Name + " hat die Spielanfrage abgelehnt");
+
                         }
+
                         else
                         {
+
                             Program.Form1.AddTextToChat("Das Gegenüber hat die Spielanfrage abgelehnt");
+
                         }
 
                         break;
+
 
                     case "gewonnen":
 
                         break;
+
 
                     case "start":
 
@@ -101,41 +119,59 @@ namespace IP_GameChat
                         GlobalTimer.Atimer.Stop();
                         GlobalTimer.Atimer.Dispose();
 
+                        // Starte das Spiel
+
+
                         GlobalVariables.MeAngefragt = false;
                         GlobalVariables.HeAngefragt = false;
 
                         if (User != null)
                         {
+
                             Program.Form1.AddTextToChat(User.Name + " hat die Spielanfrage angenommen");
+
                         }
+
                         else
                         {
+
                             Program.Form1.AddTextToChat("Das Gegenüber hat die Spielanfrage angenommen");
+
                         }
 
                         break;
 
+
                     case "beenden":
 
-                        Program.Form1.bStopGame.Enabled = true;
+                        Program.Form1.SperreStop();
 
                         if (User != null)
                         {
+
                             Program.Form1.AddTextToChat(User.Name + " hat das Spiel beendet");
+
                         }
+
                         else
                         {
+
                             Program.Form1.AddTextToChat("Das Gegenüber hat das Spiel beendet");
+
                         }
 
                         //StopGameOrStopRequest.Decide();
 
                         break;
+
                 }
             }
+
             catch (Exception ex)
             {
+
                 MessageBox.Show(ex.ToString());
+
             }
         }
 
@@ -147,26 +183,39 @@ namespace IP_GameChat
 
         public static void CreateOpponentUser(MsgParser newParserMsg)
         {
+
             try
             {
+
                 if (User == null) User = new Teilnehmer(newParserMsg.Name, newParserMsg.Host, "he") { Id = newParserMsg.Id };
+
                 else {User.Name = newParserMsg.Name;}
+
             }
+
             catch (Exception ex)
             {
+
                 MessageBox.Show(ex.ToString());
+
             }
         }
 
         public static void WriteChat(MsgParser newParserMsg)
         {
+
             try
             {
+
                 Program.Form1.AddTextToChat(newParserMsg.Name + " @" + newParserMsg.Time + ": " + newParserMsg.Message);
+
             }
+
             catch (Exception ex)
             {
+
                 MessageBox.Show(ex.ToString());
+
             }
         }
 
