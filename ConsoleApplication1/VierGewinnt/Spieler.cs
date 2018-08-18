@@ -16,11 +16,10 @@ namespace VierGewinnt.Core
         public Spieler(string name, IList<Spielstein> spielsteine)
         {
 
-            if (string.IsNullOrWhiteSpace((name))) throw new ArgumentNullException("name");
-            if (spielsteine == null) throw new ArgumentNullException("spielsteine");
-
+            if (string.IsNullOrWhiteSpace(name)) throw new ArgumentNullException("name");
             Name = name;
-            Spielsteine = spielsteine;
+
+            Spielsteine = spielsteine ?? throw new ArgumentNullException(nameof(spielsteine));
 
         }
 

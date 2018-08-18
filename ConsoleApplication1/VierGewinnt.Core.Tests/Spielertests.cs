@@ -18,12 +18,13 @@ namespace VierGewinnt.Core.Tests
             // Set
             var spielsteine = new List<Spielstein>
                                 {
-                                    new Spielstein(),
-                                    new Spielstein()
+                                    new Spielstein(new Farbe(155,2,0),"Foo"),
+                                    new Spielstein(new Farbe(155,2,0),"Foo")
                                 };
 
+            var sut = new Spieler("Foo", spielsteine);
             var initialCount = spielsteine.Count;
-            var  sut = new Spieler("Foo", spielsteine);
+
 
             sut.SpieleZug(new SpalteMock());
 
@@ -39,10 +40,10 @@ namespace VierGewinnt.Core.Tests
 
             // Set
             var spielsteine = new List<Spielstein>
-                                {
-                                    new Spielstein(),
-                                    new Spielstein()
-                                };
+            {
+                new Spielstein(new Farbe(155,2,0),"Foo"),
+                new Spielstein(new Farbe(155,2,0),"Foo")
+            };
 
             var sut = new Spieler("Foo", spielsteine);
             var spalteMock = new SpalteMock();
@@ -52,25 +53,5 @@ namespace VierGewinnt.Core.Tests
             // Assert
             Assert.IsTrue(spalteMock.WurdeLasseSpielsteinFallenGenauEinmalAufgerufen);
         }
-
     }
-
-    // Test Abhängigkeiten
-    public class SpalteMock : ISpalte
-    {
-
-        private int _anzahlLasseSpielsteinFallenAufrufe;
-
-        public void LasseSpielsteinFallen(Spielstein spielstein)
-        {
-            _anzahlLasseSpielsteinFallenAufrufe++;
-        }
-
-        public bool WurdeLasseSpielsteinFallenGenauEinmalAufgerufen
-        {
-            get { return _anzahlLasseSpielsteinFallenAufrufe == 1; }
-        }
-
-    }
-
 }

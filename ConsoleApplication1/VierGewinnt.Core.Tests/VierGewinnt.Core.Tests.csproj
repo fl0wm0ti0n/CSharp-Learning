@@ -48,8 +48,12 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="LinienDummy.cs" />
+    <Compile Include="SpalteMock.cs" />
+    <Compile Include="Spaltentests.cs" />
     <Compile Include="Spielertests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Linientests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
