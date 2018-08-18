@@ -1,5 +1,4 @@
 ﻿using System;
-using VierGewinnt.Core;
 
 namespace VierGewinnt.Core
 {
