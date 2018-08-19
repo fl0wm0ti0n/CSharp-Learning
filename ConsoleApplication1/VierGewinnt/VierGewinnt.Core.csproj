@@ -49,6 +49,7 @@
     <Compile Include="Spalte.cs" />
     <Compile Include="Spiel.cs" />
     <Compile Include="Spielbrett.cs" />
+    <Compile Include="SpielbrettFactory.cs" />
     <Compile Include="Spieler.cs" />
     <Compile Include="Spielstein.cs" />
     <Compile Include="WinCalculation.cs" />
